@@ -9,8 +9,8 @@ import {
 } from './filterClasses'
 import { Command, Option } from 'commander'
 import {
-    addStorageValues,
-    convertClasses2Storages,
+    addDynamicVariables,
+    convertClasses2StorageSections,
 } from './converterClasses2Storage'
 import { convertStorages2Dot } from './converterStorage2Dot'
 import { isAddress } from './utils/regEx'
@@ -18,15 +18,11 @@ import { writeOutputFiles, writeSolidity } from './writerFiles'
 import { basename } from 'path'
 import { squashUmlClasses } from './squashClasses'
 import { diffCode } from './diff'
+import { addSlotValues } from './slotValues'
+import { ethers } from 'ethers'
 
 const clc = require('cli-color')
 const program = new Command()
-
-const version =
-    basename(__dirname) === 'lib'
-        ? require('../package.json').version // used when run from compile js in /lib
-        : require('../../package.json').version // used when run from TypeScript source files under src/ts via ts-node
-program.version(version)
 
 const debugControl = require('debug')
 const debug = require('debug')('sol2uml')
@@ -71,7 +67,29 @@ The Solidity code can be pulled from verified source code on Blockchain explorer
             'Blockchain explorer API key. eg Etherscan, Arbiscan, Optimism, BscScan, CronoScan, FTMScan, PolygonScan or SnowTrace API key'
         ).env('SCAN_API_KEY')
     )
+    .option(
+        '-bc, --backColor <color>',
+        'Canvas background color. "none" will use a transparent canvas.',
+        'white'
+    )
+    .option(
+        '-sc, --shapeColor <color>',
+        'Basic drawing color for graphics, not text',
+        'black'
+    )
+    .option(
+        '-fc, --fillColor <color>',
+        'Color used to fill the background of a node',
+        'gray95'
+    )
+    .option('-tc, --textColor <color>', 'Color used for text', 'black')
     .option('-v, --verbose', 'run with debugging statements', false)
+
+const version =
+    basename(__dirname) === 'lib'
+        ? require('../package.json').version // used when run from compile js in /lib
+        : require('../../package.json').version // used when run from TypeScript source files under src/ts via ts-node
+program.version(version)
 
 program
     .command('class', { isDefault: true })
@@ -260,6 +278,11 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
         'Block number to get the contract storage values from.',
         'latest'
     )
+    .option(
+        '-a, --array <number>',
+        'Number of slots to display at the start and end of arrays.',
+        '2'
+    )
     .action(async (fileFolderAddress, options, command) => {
         try {
             const combinedOptions = {
@@ -280,17 +303,18 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
             )
 
             contractName = combinedOptions.contract || contractName
-            const storages = convertClasses2Storages(
+            const arrayItems = parseInt(combinedOptions.array)
+            const storageSections = convertClasses2StorageSections(
                 contractName,
                 umlClasses,
+                arrayItems,
                 combinedOptions.contractFile
             )
 
             if (isAddress(fileFolderAddress)) {
                 // The first storage is the contract
-                storages[0].address = fileFolderAddress
+                storageSections[0].address = fileFolderAddress
             }
-            debug(storages)
 
             if (combinedOptions.data) {
                 let storageAddress = combinedOptions.storage
@@ -309,20 +333,42 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
                     storageAddress = fileFolderAddress
                 }
 
-                const storage = storages.find((so) => so.name === contractName)
-                if (!storageAddress)
-                    throw Error(
-                        `Could not find the "${contractName}" contract in list of parsed storages`
+                let block = combinedOptions.block
+                if (block === 'latest') {
+                    const provider = new ethers.providers.JsonRpcProvider(
+                        combinedOptions.url
                     )
-                await addStorageValues(
-                    combinedOptions.url,
-                    storageAddress,
-                    storage,
-                    combinedOptions.block
-                )
+                    block = await provider.getBlockNumber()
+                    debug(
+                        `Latest block is ${block}. All storage slot values will be from this block.`
+                    )
+                }
+
+                // Get slot values for each storage section
+                for (const storageSection of storageSections) {
+                    await addSlotValues(
+                        combinedOptions.url,
+                        storageAddress,
+                        storageSection,
+                        arrayItems,
+                        block
+                    )
+                    // Add storage variables for dynamic arrays, strings and bytes
+                    await addDynamicVariables(
+                        storageSection,
+                        storageSections,
+                        combinedOptions.url,
+                        storageAddress,
+                        arrayItems,
+                        block
+                    )
+                }
             }
 
-            const dotString = convertStorages2Dot(storages, combinedOptions)
+            const dotString = convertStorages2Dot(
+                storageSections,
+                combinedOptions
+            )
 
             await writeOutputFiles(
                 dotString,
@@ -331,7 +377,7 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
                 combinedOptions.outputFileName
             )
         } catch (err) {
-            console.error(err.stack)
+            console.error(err)
             process.exit(2)
         }
     })
