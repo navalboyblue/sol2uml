@@ -105,7 +105,7 @@ sol2uml storage ./src/contracts -c DynamicArrayStorage
 
 As sol2uml don't know from just looking at the code how many items are in each array, it will just show the location of the first storage slot and its structure.
 
-The 32 byte string in hexidecimal format at the top of each dynamic array is the slot key. For example, the location of the values of `numbers` array starts from slot `0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563` in storage.
+The 32 byte string in hexadecimal format at the top of each dynamic array is the slot key. For example, the location of the values of `numbers` array starts from slot `0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563` in storage.
 This is the keccak256 hash of slot 0 which has been assigned to the `numbers` array.
 
 The following is generated from the `DynamicArrayStorage` contract deployed on Arbitrum to [0x66535378de7FB9219b637DBE3e3FFad33387f80B](https://arbiscan.io/address/0x66535378de7FB9219b637DBE3e3FFad33387f80B#code).
