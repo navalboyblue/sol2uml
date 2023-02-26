@@ -263,3 +263,12 @@ sol2uml storage 0xc63a48d85CCE7C3bD4d18db9c0972a4D223e4193 -bn 16000000 -d -s 0x
 
 ![Staking Tokens BPT](./StakedTokenBPTData.svg)
 
+## Uniswap ETH/USDC Pool
+
+The `value` column with the slot values in hexadecimal format can be hidden with the `-hv, --hideValue` option.
+
+```
+sol2uml  storage -d -hv 0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8 -o ./examples/storage/UniswapV3PoolData.svg
+```
+
+![Uniswap ETH/USDC Pool Data](./UniswapV3PoolData.svg)

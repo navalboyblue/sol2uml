@@ -15,6 +15,7 @@ export const convertStorages2Dot = (
         shapeColor: string
         fillColor: string
         textColor: string
+        hideValues?: boolean
     }
 ): string => {
     let dotString: string = `
@@ -50,7 +51,7 @@ node [shape=record, style=filled, color="${options.shapeColor}", fillcolor="${op
 export function convertStorage2Dot(
     storageSection: StorageSection,
     dotString: string,
-    options: { data: boolean }
+    options: { data: boolean; hideValues?: boolean }
 ): string {
     // write storage header with name and optional address
     dotString += `\n${storageSection.id} [label="${storageSection.name} \\<\\<${
@@ -88,7 +89,7 @@ export function convertStorage2Dot(
     })
 
     // write slot values if available
-    if (options.data) {
+    if (options.data && !options.hideValues) {
         dotString += `} | {value${dataLine}`
         startingVariables.forEach((variable, i) => {
             if (displayData[i]) {

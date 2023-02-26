@@ -283,6 +283,7 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
         'Number of slots to display at the start and end of arrays.',
         '2'
     )
+    .option('-hv, --hideValue', 'Hide storage slot value column.', false)
     .action(async (fileFolderAddress, options, command) => {
         try {
             const combinedOptions = {

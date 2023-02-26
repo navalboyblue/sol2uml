@@ -5,7 +5,9 @@ export declare const convertStorages2Dot: (storageSections: readonly StorageSect
     shapeColor: string;
     fillColor: string;
     textColor: string;
+    hideValues?: boolean;
 }) => string;
 export declare function convertStorage2Dot(storageSection: StorageSection, dotString: string, options: {
     data: boolean;
+    hideValues?: boolean;
 }): string;

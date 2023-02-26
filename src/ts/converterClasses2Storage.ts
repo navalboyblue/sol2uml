@@ -591,9 +591,10 @@ const findTypeClass = (
     otherClasses: readonly UmlClass[]
 ): UmlClass => {
     // Find associated UserDefined type
+    const types = userType.split('.')
     const association = {
         referenceType: ReferenceType.Memory,
-        targetUmlClassName: userType,
+        targetUmlClassName: types.length === 1 ? types[0] : types[1],
     }
     const typeClass = findAssociatedClass(association, umlClass, otherClasses)
     if (!typeClass) {

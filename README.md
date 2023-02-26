@@ -137,6 +137,7 @@ Options:
   -u, --url <url>                 URL of the Ethereum node to get storage values if the `data` option is used. (default: "http://localhost:8545", env: NODE_URL)
   -bn, --block <number>           Block number to get the contract storage values from. (default: "latest")
   -a, --array <number>            Number of slots to display at the start and end of arrays. (default: "2")
+  -hv, --hideValue                Hide storage slot value column.
   -h, --help                      display help for command
 ```
 
