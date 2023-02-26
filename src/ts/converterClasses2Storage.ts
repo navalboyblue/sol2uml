@@ -1,4 +1,10 @@
-import { Attribute, AttributeType, ClassStereotype, UmlClass } from './umlClass'
+import {
+    Attribute,
+    AttributeType,
+    ClassStereotype,
+    ReferenceType,
+    UmlClass,
+} from './umlClass'
 import { findAssociatedClass } from './associations'
 import { hexZeroPad, keccak256 } from 'ethers/lib/utils'
 import { BigNumber } from 'ethers'
@@ -420,7 +426,12 @@ export const parseStorageSectionFromAttribute = (
     }
     if (attribute.attributeType === AttributeType.UserDefined) {
         // Is the user defined type linked to another Contract, Struct or Enum?
-        const typeClass = findTypeClass(attribute.type, attribute, otherClasses)
+        const typeClass = findTypeClass(
+            attribute.type,
+            attribute,
+            umlClass,
+            otherClasses
+        )
 
         if (typeClass.stereotype === ClassStereotype.Struct) {
             const variables = parseVariables(
@@ -458,7 +469,12 @@ export const parseStorageSectionFromAttribute = (
         // If mapping of user defined type
         if (result !== null && result[1] && !isElementary(result[1])) {
             // Find UserDefined type can be a contract, struct or enum
-            const typeClass = findTypeClass(result[1], attribute, otherClasses)
+            const typeClass = findTypeClass(
+                result[1],
+                attribute,
+                umlClass,
+                otherClasses
+            )
 
             if (typeClass.stereotype === ClassStereotype.Struct) {
                 let variables = parseVariables(
@@ -565,18 +581,21 @@ const addArrayVariables = (
  * Finds an attribute's user defined type that can be a Contract, Struct or Enum
  * @param userType User defined type that is being looked for. This can be the base type of an attribute.
  * @param attribute the attribute in the class that is user defined. This is just used for logging purposes
+ * @param umlClass the attribute is part of.
  * @param otherClasses
  */
 const findTypeClass = (
     userType: string,
     attribute: Attribute,
+    umlClass: UmlClass,
     otherClasses: readonly UmlClass[]
 ): UmlClass => {
     // Find associated UserDefined type
-    // TODO this just matches on name and doesn't take into account imports
-    const typeClass = otherClasses.find(
-        ({ name }) => name === userType || name === userType.split('.')[1]
-    )
+    const association = {
+        referenceType: ReferenceType.Memory,
+        targetUmlClassName: userType,
+    }
+    const typeClass = findAssociatedClass(association, umlClass, otherClasses)
     if (!typeClass) {
         throw Error(
             `Failed to find user defined type "${userType}" in attribute "${attribute.name}" of type "${attribute.attributeType}""`
@@ -693,6 +712,7 @@ export const calcStorageByteSize = (
         const attributeTypeClass = findTypeClass(
             attribute.type,
             attribute,
+            umlClass,
             otherClasses
         )
 
@@ -720,6 +740,7 @@ export const calcStorageByteSize = (
                         const userDefinedClass = findTypeClass(
                             structAttribute.type,
                             structAttribute,
+                            umlClass,
                             otherClasses
                         )
                         // If a struct
