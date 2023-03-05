@@ -1,6 +1,7 @@
 # Solidity 2 UML
 
-[![npm version](https://badge.fury.io/js/sol2uml.svg)](https://badge.fury.io/js/sol2uml)
+[![npm (tag)](https://img.shields.io/npm/v/sol2uml)](https://www.npmjs.com/package/sol2uml)
+[![Twitter Follow](https://img.shields.io/twitter/follow/naddison?style=social)](https://twitter.com/naddison)
 
 A visualisation tool for [Solidity](https://solidity.readthedocs.io/) contracts featuring:
 1. [Unified Modeling Language (UML)](https://en.wikipedia.org/wiki/Unified_Modeling_Language) [class diagram](https://en.wikipedia.org/wiki/Class_diagram) generator for Solidity contracts.
