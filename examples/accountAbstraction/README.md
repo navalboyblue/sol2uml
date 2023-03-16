@@ -5,7 +5,7 @@ The following sol2uml diagrams have been run against the [ERC-4337](https://eips
 GitHub repository. The main contracts are
 
 * [contracts/core/IAccount.sol](https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/interfaces/IAccount.sol)
-* [contracts/core/BaseAccount.sol](https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/core/BaseAccount.sol)
+* [contracts/samples/SimpleAccount.sol](https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/samples/SimpleAccount.sol)
 * [contracts/core/EntryPoint.sol](https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/core/EntryPoint.sol)
 
 The full option names have been used below rather than the short names for readability.
