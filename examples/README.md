@@ -43,19 +43,19 @@ Generated from version [4.7.3 contracts](https://github.com/OpenZeppelin/openzep
 
 ## Uniswap V3 Router
 
-* -hp hide private and internal variables and functions
-* -hi hide interfaces 
-* -hl hide libraries
-* -he hide enums
+-   -hp hide private and internal variables and functions
+-   -hi hide interfaces
+-   -hl hide libraries
+-   -he hide enums
 
 ![Uniswap V3 Router](./uniswap-router.svg)
 Generated from running
+
 ```
 sol2uml -hp -hi -hl -hs -he 0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45
 ```
 
 This uses the verified Solidity code loaded to Etherscan https://etherscan.io/address/0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45#code
-
 
 ## Uniswap V3 Router Squashed
 
@@ -66,6 +66,7 @@ The last stereotype is the contract the variable or function is implemented in. 
 ![Uniswap V3 Router Squashed](./uniswap-router-squash.svg)
 
 Generated from running
+
 ```
 sol2uml -s -hp -hi -hl -hs -he 0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45
 ```
@@ -77,6 +78,7 @@ Adding the `-hsc, --hideSourceContract` option to the previous diagram removes t
 ![Uniswap V3 Router Squashed no source contract](./uniswap-router-squash-no-source.svg)
 
 Generated from running
+
 ```
 sol2uml -s -hsc -hp -hi -hl -hs -he 0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45
 ```
@@ -96,6 +98,7 @@ This uses the verified Solidity code loaded to Etherscan https://etherscan.io/ad
 
 ![Compound Finance cDAI](./CErc20.svg)
 Generated from running
+
 ```
 sol2uml 0xf5dce57282a584d2746faf1593d3121fcac444dc
 ```
@@ -109,6 +112,7 @@ Also, only classes linked to the base `CErc20` contract are included.
 
 ![Compound Finance cDAI](./CErc20-hide.svg)
 Generated from running
+
 ```
 sol2uml -b CErc20 -he -hs -hi 0xf5dce57282a584d2746faf1593d3121fcac444dc
 ```

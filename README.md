@@ -337,7 +337,7 @@ To access your local changes on your machine globally.
 Commands to publish a new package version.
 
 ```bash
-npm run prettier:fix
+npm run prettier
 npm run clean
 npm run package-lock
 npm run build
