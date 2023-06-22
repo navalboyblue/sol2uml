@@ -6,6 +6,7 @@ import { convertAST2UmlClasses } from './converterAST2Classes'
 import { UmlClass } from './umlClass'
 import { topologicalSortClasses } from './filterClasses'
 import { parseSolidityVersion } from './utils/regEx'
+import path from 'path'
 
 require('axios-debug-log')
 const debug = require('debug')('sol2uml')
@@ -119,10 +120,11 @@ export class EtherscanParser {
      * @return Promise string of Solidity code
      */
     async getSolidityCode(
-        contractAddress: string
+        contractAddress: string,
+        filename?: string
     ): Promise<{ solidityCode: string; contractName: string }> {
         const { files, contractName, compilerVersion, remappings } =
-            await this.getSourceCode(contractAddress)
+            await this.getSourceCode(contractAddress, filename)
 
         // Parse the UmlClasses from the Solidity code in each file
         let umlClasses: UmlClass[] = []
@@ -214,8 +216,12 @@ export class EtherscanParser {
     /**
      * Calls Etherscan to get the verified source code for the specified contract address
      * @param contractAddress Ethereum contract address with a 0x prefix
+     * @oaram filename optional, case-sensitive name of the source file without the .sol
      */
-    async getSourceCode(contractAddress: string): Promise<{
+    async getSourceCode(
+        contractAddress: string,
+        filename?: string
+    ): Promise<{
         files: readonly { code: string; filename: string }[]
         contractName: string
         compilerVersion: string
@@ -307,8 +313,21 @@ export class EtherscanParser {
                     filename: contractAddress,
                 }
             })
+            let files = results.flat(1)
+            const filenameWithExt = filename + '.sol'
+            if (filename) {
+                files = files.filter(
+                    (r: { filename: string }) =>
+                        path.parse(r.filename).base == filenameWithExt
+                )
+                if (!files?.length) {
+                    throw new Error(
+                        `Failed to find source file "${filename}" for contract ${contractAddress}`
+                    )
+                }
+            }
             return {
-                files: results.flat(1),
+                files,
                 contractName: response.data.result[0].ContractName,
                 compilerVersion: response.data.result[0].CompilerVersion,
                 remappings,

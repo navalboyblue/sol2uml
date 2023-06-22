@@ -193,6 +193,8 @@ Arguments:
 
 Options:
   -l, --lineBuffer <value>  Minimum number of lines before and after changes (default: "4")
+  --aFile <value>           Contract A source code filename without the .sol extension. (default: compares all source files)
+  --bFile <value>           Contract B source code filename without the .sol extension. (default: aFile if specified)
   -s, --saveFiles           Save the flattened contract code to the filesystem. The file names will be the contract address with a .sol extension. (default: false)
   -h, --help                display help for command
 ```
@@ -329,6 +331,25 @@ To run the Jest tests
 To access your local changes on your machine globally.
 
 `npm link`
+
+# Publish
+
+Commands to publish a new package version.
+
+```bash
+npm run prettier:fix
+npm run clean
+npm run package-lock
+npm run build
+npm run permit
+# make tx2uml globally available for local testing
+npm link
+# check all the files are included in the npm package
+npm pack --dry-run
+npm publish
+```
+
+Then create a new release on GitHub https://github.com/naddison36/sol2uml/releases
 
 # About
 

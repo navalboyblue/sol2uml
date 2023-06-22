@@ -127,7 +127,11 @@ export function convertAST2UmlClasses(
                                 : [],
                         }
                         debug(
-                            `Added filesystem import ${newImport.absolutePath} with class names ${newImport.classNames}`
+                            `Added filesystem import ${
+                                newImport.absolutePath
+                            } with class names ${newImport.classNames.map(
+                                (i) => i.className
+                            )}`
                         )
                         imports.push(newImport)
                     } catch (err) {

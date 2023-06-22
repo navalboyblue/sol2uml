@@ -26,7 +26,7 @@ export declare class EtherscanParser {
      * @param contractAddress Ethereum contract address with a 0x prefix
      * @return Promise string of Solidity code
      */
-    getSolidityCode(contractAddress: string): Promise<{
+    getSolidityCode(contractAddress: string, filename?: string): Promise<{
         solidityCode: string;
         contractName: string;
     }>;
@@ -39,8 +39,9 @@ export declare class EtherscanParser {
     /**
      * Calls Etherscan to get the verified source code for the specified contract address
      * @param contractAddress Ethereum contract address with a 0x prefix
+     * @oaram filename optional, case-sensitive name of the source file without the .sol
      */
-    getSourceCode(contractAddress: string): Promise<{
+    getSourceCode(contractAddress: string, filename?: string): Promise<{
         files: readonly {
             code: string;
             filename: string;

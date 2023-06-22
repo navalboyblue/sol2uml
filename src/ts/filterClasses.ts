@@ -132,7 +132,13 @@ function loadWeightedDirectedGraph(
             }
             const isTarget = umlClasses.find((u) => u.id === targetUmlClass.id)
             debug(
-                `isTarget ${isTarget} Adding edge from ${sourceUmlClass.name} with id ${sourceUmlClass.id} to ${targetUmlClass.name} with id ${targetUmlClass.id} and type ${targetUmlClass.stereotype}`
+                `isTarget ${!!isTarget}: Adding edge from ${
+                    sourceUmlClass.name
+                } with id ${sourceUmlClass.id} to ${
+                    targetUmlClass.name
+                } with id ${targetUmlClass.id} and type ${
+                    targetUmlClass.stereotype
+                }`
             )
             weightedDirectedGraph.addEdge(
                 new Edge(sourceUmlClass.id, targetUmlClass.id, 1)

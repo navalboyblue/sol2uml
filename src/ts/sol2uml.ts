@@ -445,6 +445,18 @@ The line numbers are from contract B. There are no line numbers for the red sect
             'Minimum number of lines before and after changes'
         ).default('4')
     )
+    .addOption(
+        new Option(
+            '-af --aFile <value>',
+            'Contract A source code filename without the .sol extension. (default: compares all source files)'
+        )
+    )
+    .addOption(
+        new Option(
+            '-bf --bFile <value>',
+            'Contract B source code filename without the .sol extension. (default: aFile if specified)'
+        )
+    )
     .option(
         '-s, --saveFiles',
         'Save the flattened contract code to the filesystem. The file names will be the contract address with a .sol extension.',
@@ -473,9 +485,15 @@ The line numbers are from contract B. There are no line numbers for the red sect
 
             // Get verified Solidity code from Etherscan and flatten
             const { solidityCode: codeA, contractName: contractNameA } =
-                await etherscanParser.getSolidityCode(addressA)
+                await etherscanParser.getSolidityCode(
+                    addressA,
+                    combinedOptions.aFile
+                )
             const { solidityCode: codeB, contractName: contractNameB } =
-                await etherscanParser.getSolidityCode(addressB)
+                await etherscanParser.getSolidityCode(
+                    addressB,
+                    combinedOptions.bFile || combinedOptions.aFile
+                )
 
             console.log(`Difference between`)
             console.log(

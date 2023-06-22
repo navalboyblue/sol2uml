@@ -17,7 +17,31 @@ describe('Etherscan', () => {
         expect(sourceCode.contractName).toEqual('DAO')
         expect(sourceCode.compilerVersion).toEqual('v0.3.1-2016-04-12-3ad5e82')
     })
+    test('get source code files', async () => {
+        const etherscan = new EtherscanParser(
+            'HPD85TXCG1HW3N5G6JJXK1A7EE5K86CYBJ'
+        )
 
+        const sourceCode = await etherscan.getSourceCode(
+            '0xc1fc9E5eC3058921eA5025D703CBE31764756319'
+        )
+        expect(sourceCode.files).toHaveLength(4)
+        expect(sourceCode.contractName).toEqual('OETHMorphoAaveStrategyProxy')
+        expect(sourceCode.compilerVersion).toEqual('v0.8.7+commit.e28d00a7')
+    })
+    test('get source code file', async () => {
+        const etherscan = new EtherscanParser(
+            'HPD85TXCG1HW3N5G6JJXK1A7EE5K86CYBJ'
+        )
+
+        const sourceCode = await etherscan.getSourceCode(
+            '0xc1fc9E5eC3058921eA5025D703CBE31764756319',
+            'InitializeGovernedUpgradeabilityProxy'
+        )
+        expect(sourceCode.files).toHaveLength(1)
+        expect(sourceCode.contractName).toEqual('OETHMorphoAaveStrategyProxy')
+        expect(sourceCode.compilerVersion).toEqual('v0.8.7+commit.e28d00a7')
+    })
     test('Get UML Classes', async () => {
         const etherscan = new EtherscanParser(
             'HPD85TXCG1HW3N5G6JJXK1A7EE5K86CYBJ'
