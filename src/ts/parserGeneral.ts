@@ -8,6 +8,7 @@ const debug = require('debug')('sol2uml')
 export interface ParserOptions {
     apiKey?: string
     network?: Network
+    explorerUrl?: string
     subfolders?: string
     ignoreFilesOrFolders?: string
 }
@@ -39,7 +40,8 @@ export const parserUmlClasses = async (
             options.apiKey || 'ZAD4UI2RCXCQTP38EXS3UY2MPHFU5H9KB1'
         const etherscanParser = new EtherscanParser(
             etherscanApiKey,
-            options.network
+            options.network,
+            options.explorerUrl
         )
 
         result = await etherscanParser.getUmlClasses(fileFolderAddress)

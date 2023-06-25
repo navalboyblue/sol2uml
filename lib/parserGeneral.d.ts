@@ -3,6 +3,7 @@ import { UmlClass } from './umlClass';
 export interface ParserOptions {
     apiKey?: string;
     network?: Network;
+    explorerUrl?: string;
     subfolders?: string;
     ignoreFilesOrFolders?: string;
 }

@@ -38,8 +38,13 @@ export class EtherscanParser {
 
     constructor(
         protected apikey: string = 'ZAD4UI2RCXCQTP38EXS3UY2MPHFU5H9KB1',
-        public network: Network = 'mainnet'
+        public network: Network = 'mainnet',
+        url?: string
     ) {
+        if (url) {
+            this.url = url
+            return
+        }
         if (!networks.includes(network)) {
             throw new Error(
                 `Invalid network "${network}". Must be one of ${networks}`

@@ -10,7 +10,7 @@ export declare class EtherscanParser {
     protected apikey: string;
     network: Network;
     readonly url: string;
-    constructor(apikey?: string, network?: Network);
+    constructor(apikey?: string, network?: Network, url?: string);
     /**
      * Parses the verified source code files from Etherscan
      * @param contractAddress Ethereum contract address with a 0x prefix

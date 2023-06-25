@@ -50,10 +50,19 @@ Can also flatten or compare verified source files on Etherscan-like explorers.`
         'comma separated list of files or folders to ignore'
     )
     .addOption(
-        new Option('-n, --network <network>', 'Ethereum network')
+        new Option(
+            '-n, --network <network>',
+            'Ethereum network which maps to a blockchain explorer'
+        )
             .choices(networks)
             .default('mainnet')
             .env('ETH_NETWORK')
+    )
+    .addOption(
+        new Option(
+            '-e, --explorerUrl <url>',
+            'Override network with custom blockchain explorer API URL. eg Polygon Mumbai testnet https://api-testnet.polygonscan.com/api'
+        ).env('EXPLORER_URL')
     )
     .addOption(
         new Option(
@@ -400,7 +409,8 @@ In order for the merged code to compile, the following is done:
 
             const etherscanParser = new EtherscanParser(
                 combinedOptions.apiKey,
-                combinedOptions.network
+                combinedOptions.network,
+                combinedOptions.explorerUrl
             )
 
             const { solidityCode, contractName } =
@@ -480,7 +490,8 @@ The line numbers are from contract B. There are no line numbers for the red sect
 
             const etherscanParser = new EtherscanParser(
                 combinedOptions.apiKey,
-                combinedOptions.network
+                combinedOptions.network,
+                combinedOptions.explorerUrl
             )
 
             // Get verified Solidity code from Etherscan and flatten
