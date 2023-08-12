@@ -21,7 +21,7 @@ const debug = require('debug')('sol2uml')
 export function convertUmlClasses2Dot(
     umlClasses: UmlClass[],
     clusterFolders: boolean = false,
-    classOptions: ClassOptions = {}
+    classOptions: ClassOptions = {},
 ): string {
     let dotString: string = `
 digraph UmlClassDiagram {
@@ -89,7 +89,7 @@ function sortUmlClassesByCodePath(umlClasses: UmlClass[]): UmlClass[] {
 
 export function addAssociationsToDot(
     umlClasses: UmlClass[],
-    classOptions: ClassOptions = {}
+    classOptions: ClassOptions = {},
 ): string {
     let dotString: string = ''
 
@@ -123,14 +123,14 @@ export function addAssociationsToDot(
             const targetUmlClass = findAssociatedClass(
                 association,
                 sourceUmlClass,
-                umlClasses
+                umlClasses,
             )
             if (targetUmlClass) {
                 dotString += addAssociationToDot(
                     sourceUmlClass,
                     targetUmlClass,
                     association,
-                    classOptions
+                    classOptions,
                 )
             }
         }
@@ -143,7 +143,7 @@ function addAssociationToDot(
     sourceUmlClass: UmlClass,
     targetUmlClass: UmlClass,
     association: Association,
-    classOptions: ClassOptions = {}
+    classOptions: ClassOptions = {},
 ): string {
     // do not include library or interface associations if hidden
     // Or associations to Structs, Enums or Constants if they are hidden

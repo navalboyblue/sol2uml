@@ -52,7 +52,7 @@ export function convertAST2UmlClasses(
     node: ASTNode,
     relativePath: string,
     remappings: Remapping[],
-    filesystem: boolean = false
+    filesystem: boolean = false,
 ): UmlClass[] {
     const imports: Import[] = []
     umlClasses = []
@@ -130,13 +130,13 @@ export function convertAST2UmlClasses(
                             `Added filesystem import ${
                                 newImport.absolutePath
                             } with class names ${newImport.classNames.map(
-                                (i) => i.className
-                            )}`
+                                (i) => i.className,
+                            )}`,
                         )
                         imports.push(newImport)
                     } catch (err) {
                         debug(
-                            `Failed to resolve import ${childNode.path} from file ${relativePath}`
+                            `Failed to resolve import ${childNode.path} from file ${relativePath}`,
                         )
                     }
                 } else {
@@ -148,7 +148,7 @@ export function convertAST2UmlClasses(
                               posix.join(codeFolder.toString(), remappedFile)
                             : remappedFile
                     debug(
-                        `codeFolder ${codeFolder} childNode.path ${childNode.path} remapped to ${remappedFile}`
+                        `codeFolder ${codeFolder} childNode.path ${childNode.path} remapped to ${remappedFile}`,
                     )
                     const newImport = {
                         absolutePath: importPath,
@@ -162,11 +162,11 @@ export function convertAST2UmlClasses(
                             : [],
                     }
                     debug(
-                        `Added Etherscan import ${newImport.absolutePath} with:`
+                        `Added Etherscan import ${newImport.absolutePath} with:`,
                     )
                     newImport.classNames.forEach((className) => {
                         debug(
-                            `\t alias ${className.className}, name ${className.className}`
+                            `\t alias ${className.className}, name ${className.className}`,
                         )
                     })
                     imports.push(newImport)
@@ -201,7 +201,7 @@ export function convertAST2UmlClasses(
                 umlClasses.push(umlClass)
             } else if (childNode.type !== 'PragmaDirective') {
                 debug(
-                    `node type "${childNode.type}" not parsed in ${relativePath}`
+                    `node type "${childNode.type}" not parsed in ${relativePath}`,
                 )
             }
         })
@@ -290,7 +290,7 @@ function parseContractDefinition(node: ContractDefinition, umlClass: UmlClass) {
             subNode.variables.forEach(
                 (variable: StateVariableDeclarationVariable) => {
                     const [type, attributeType] = parseTypeName(
-                        variable.typeName
+                        variable.typeName,
                     )
                     const valueStore =
                         variable.isDeclaredConst || variable.isImmutable
@@ -313,7 +313,7 @@ function parseContractDefinition(node: ContractDefinition, umlClass: UmlClass) {
                         }
                         // TODO handle expressions. eg N_COINS * 2
                     }
-                }
+                },
             )
 
             // Recursively parse variables for associations
@@ -430,11 +430,11 @@ function parseContractDefinition(node: ContractDefinition, umlClass: UmlClass) {
  */
 function addAssociations(
     nodes: (ASTNode & { isStateVar?: boolean })[],
-    umlClass: UmlClass
+    umlClass: UmlClass,
 ) {
     if (!nodes || !Array.isArray(nodes)) {
         debug(
-            'Warning - can not recursively parse AST nodes for associations. Invalid nodes array'
+            'Warning - can not recursively parse AST nodes for associations. Invalid nodes array',
         )
         return
     }
@@ -459,7 +459,7 @@ function addAssociations(
                 if (node.typeName.type === 'UserDefinedTypeName') {
                     // Library references can have a Library dot variable notation. eg Set.Data
                     const { umlClassName, structOrEnum } = parseClassName(
-                        node.typeName.namePath
+                        node.typeName.namePath,
                     )
                     umlClass.addAssociation({
                         referenceType,
@@ -480,7 +480,7 @@ function addAssociations(
                                 isStateVar: node.isStateVar,
                             },
                         ],
-                        umlClass
+                        umlClass,
                     )
                     // Array of user defined types
                 } else if (node.typeName.type == 'ArrayTypeName') {
@@ -489,7 +489,7 @@ function addAssociations(
                         'UserDefinedTypeName'
                     ) {
                         const { umlClassName } = parseClassName(
-                            node.typeName.baseTypeName.namePath
+                            node.typeName.baseTypeName.namePath,
                         )
                         umlClass.addAssociation({
                             referenceType,
@@ -497,7 +497,7 @@ function addAssociations(
                         })
                     } else if (node.typeName.length?.type === 'Identifier') {
                         const { umlClassName } = parseClassName(
-                            node.typeName.length.name
+                            node.typeName.length.name,
                         )
                         umlClass.addAssociation({
                             referenceType,
@@ -555,7 +555,7 @@ function addAssociations(
                     if ('statements' in node.trueBody) {
                         addAssociations(
                             node.trueBody.statements as ASTNode[],
-                            umlClass
+                            umlClass,
                         )
                     }
                     if ('expression' in node.trueBody) {
@@ -566,7 +566,7 @@ function addAssociations(
                     if ('statements' in node.falseBody) {
                         addAssociations(
                             node.falseBody.statements as ASTNode[],
-                            umlClass
+                            umlClass,
                         )
                     }
                     if ('expression' in node.falseBody) {
@@ -674,7 +674,7 @@ function parseVisibility(visibility: string): Visibility {
             return Visibility.Private
         default:
             throw Error(
-                `Invalid visibility ${visibility}. Was not public, external, internal or private`
+                `Invalid visibility ${visibility}. Was not public, external, internal or private`,
             )
     }
 }

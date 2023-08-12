@@ -20,7 +20,7 @@ export interface ParserOptions {
  */
 export const parserUmlClasses = async (
     fileFolderAddress: string,
-    options: ParserOptions
+    options: ParserOptions,
 ): Promise<{
     umlClasses: UmlClass[]
     contractName?: string
@@ -33,7 +33,7 @@ export const parserUmlClasses = async (
     }
     if (isAddress(fileFolderAddress)) {
         debug(
-            `argument ${fileFolderAddress} is an Ethereum address so checking Etherscan for the verified source code`
+            `argument ${fileFolderAddress} is an Ethereum address so checking Etherscan for the verified source code`,
         )
 
         const etherscanApiKey =
@@ -41,7 +41,7 @@ export const parserUmlClasses = async (
         const etherscanParser = new EtherscanParser(
             etherscanApiKey,
             options.network,
-            options.explorerUrl
+            options.explorerUrl,
         )
 
         result = await etherscanParser.getUmlClasses(fileFolderAddress)
@@ -49,7 +49,7 @@ export const parserUmlClasses = async (
         const subfolders = parseInt(options.subfolders)
         if (isNaN(subfolders)) {
             console.error(
-                `subfolders option must be an integer. Not ${options.subfolders}`
+                `subfolders option must be an integer. Not ${options.subfolders}`,
             )
             process.exit(1)
         }
@@ -61,7 +61,7 @@ export const parserUmlClasses = async (
         result.umlClasses = await parseUmlClassesFromFiles(
             filesFolders,
             ignoreFilesFolders,
-            subfolders
+            subfolders,
         )
     }
     return result

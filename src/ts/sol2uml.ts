@@ -31,59 +31,59 @@ program
     .usage('[command] <options>')
     .description(
         `Generate UML class or storage diagrams from local Solidity code or verified Solidity code on Etherscan-like explorers.
-Can also flatten or compare verified source files on Etherscan-like explorers.`
+Can also flatten or compare verified source files on Etherscan-like explorers.`,
     )
     .addOption(
         new Option(
             '-sf, --subfolders <value>',
-            'number of subfolders that will be recursively searched for Solidity files.'
-        ).default('-1', 'all')
+            'number of subfolders that will be recursively searched for Solidity files.',
+        ).default('-1', 'all'),
     )
     .addOption(
         new Option('-f, --outputFormat <value>', 'output file format.')
             .choices(['svg', 'png', 'dot', 'all'])
-            .default('svg')
+            .default('svg'),
     )
     .option('-o, --outputFileName <value>', 'output file name')
     .option(
         '-i, --ignoreFilesOrFolders <filesOrFolders>',
-        'comma separated list of files or folders to ignore'
+        'comma separated list of files or folders to ignore',
     )
     .addOption(
         new Option(
             '-n, --network <network>',
-            'Ethereum network which maps to a blockchain explorer'
+            'Ethereum network which maps to a blockchain explorer',
         )
             .choices(networks)
             .default('mainnet')
-            .env('ETH_NETWORK')
+            .env('ETH_NETWORK'),
     )
     .addOption(
         new Option(
             '-e, --explorerUrl <url>',
-            'Override network with custom blockchain explorer API URL. eg Polygon Mumbai testnet https://api-testnet.polygonscan.com/api'
-        ).env('EXPLORER_URL')
+            'Override network with custom blockchain explorer API URL. eg Polygon Mumbai testnet https://api-testnet.polygonscan.com/api',
+        ).env('EXPLORER_URL'),
     )
     .addOption(
         new Option(
             '-k, --apiKey <key>',
-            'Blockchain explorer API key. eg Etherscan, Arbiscan, Optimism, BscScan, CronoScan, FTMScan, PolygonScan or SnowTrace API key'
-        ).env('SCAN_API_KEY')
+            'Blockchain explorer API key. eg Etherscan, Arbiscan, Optimism, BscScan, CronoScan, FTMScan, PolygonScan or SnowTrace API key',
+        ).env('SCAN_API_KEY'),
     )
     .option(
         '-bc, --backColor <color>',
         'Canvas background color. "none" will use a transparent canvas.',
-        'white'
+        'white',
     )
     .option(
         '-sc, --shapeColor <color>',
         'Basic drawing color for graphics, not text',
-        'black'
+        'black',
     )
     .option(
         '-fc, --fillColor <color>',
         'Color used to fill the background of a node',
-        'gray95'
+        'gray95',
     )
     .option('-tc, --textColor <color>', 'Color used for text', 'black')
     .option('-v, --verbose', 'run with debugging statements', false)
@@ -107,43 +107,43 @@ program
     .argument('fileFolderAddress', argumentText)
     .option(
         '-b, --baseContractNames <value>',
-        'only output contracts connected to these comma separated base contract names'
+        'only output contracts connected to these comma separated base contract names',
     )
     .addOption(
         new Option(
             '-d, --depth <value>',
-            'depth of connected classes to the base contracts. 1 will only show directly connected contracts, interfaces, libraries, structs and enums.'
-        ).default('100', 'all')
+            'depth of connected classes to the base contracts. 1 will only show directly connected contracts, interfaces, libraries, structs and enums.',
+        ).default('100', 'all'),
     )
     .option(
         '-c, --clusterFolders',
         'cluster contracts into source folders',
-        false
+        false,
     )
     .option(
         '-hv, --hideVariables',
         'hide variables from contracts, interfaces, structs and enums',
-        false
+        false,
     )
     .option(
         '-hf, --hideFunctions',
         'hide functions from contracts, interfaces and libraries',
-        false
+        false,
     )
     .option(
         '-hp, --hidePrivates',
         'hide private and internal attributes and operators',
-        false
+        false,
     )
     .option(
         '-hm, --hideModifiers',
         'hide modifier functions from contracts',
-        false
+        false,
     )
     .option(
         '-ht, --hideEvents',
         'hide events from contracts, interfaces and libraries',
-        false
+        false,
     )
     .option('-hc, --hideConstants', 'hide file level constants', false)
     .option('-hx, --hideContracts', 'hide contracts', false)
@@ -156,12 +156,12 @@ program
     .option(
         '-s, --squash',
         'squash inherited contracts to the base contract(s)',
-        false
+        false,
     )
     .option(
         '-hsc, --hideSourceContract',
         'hide the source contract when using squash',
-        false
+        false,
     )
     .action(async (fileFolderAddress, options, command) => {
         try {
@@ -173,7 +173,7 @@ program
             // Parse Solidity code from local file system or verified source code on Etherscan.
             let { umlClasses, contractName } = await parserUmlClasses(
                 fileFolderAddress,
-                combinedOptions
+                combinedOptions,
             )
 
             if (
@@ -183,7 +183,7 @@ program
                 !contractName
             ) {
                 throw Error(
-                    'Must specify base contract(s) when using the squash option against local Solidity files.'
+                    'Must specify base contract(s) when using the squash option against local Solidity files.',
                 )
             }
             if (options.squash && options.hideContracts) {
@@ -202,7 +202,7 @@ program
             if (options.squash) {
                 filteredUmlClasses = squashUmlClasses(
                     filteredUmlClasses,
-                    baseContractNames || [contractName]
+                    baseContractNames || [contractName],
                 )
             }
 
@@ -211,7 +211,7 @@ program
                 filteredUmlClasses = classesConnectedToBaseContracts(
                     filteredUmlClasses,
                     baseContractNames || [contractName],
-                    options.depth
+                    options.depth,
                 )
             }
 
@@ -219,7 +219,7 @@ program
             const dotString = convertUmlClasses2Dot(
                 filteredUmlClasses,
                 combinedOptions.clusterFolders,
-                combinedOptions
+                combinedOptions,
             )
 
             // Convert Graphviz dot format to file formats. eg svg or png
@@ -227,7 +227,7 @@ program
                 dotString,
                 contractName || 'classDiagram',
                 combinedOptions.outputFormat,
-                combinedOptions.outputFileName
+                combinedOptions.outputFileName,
             )
 
             debug(`Finished generating UML`)
@@ -243,43 +243,43 @@ program
     .description(
         `Visually display a contract's storage slots.
 
-WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A known example is fixed-sized arrays declared with an expression will fail to be sized.\n`
+WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A known example is fixed-sized arrays declared with an expression will fail to be sized.\n`,
     )
     .argument('fileFolderAddress', argumentText)
     .option(
         '-c, --contract <name>',
-        'Contract name in the local Solidity files. Not needed when using an address as the first argument as the contract name can be derived from Etherscan.'
+        'Contract name in the local Solidity files. Not needed when using an address as the first argument as the contract name can be derived from Etherscan.',
     )
     .option(
         '-cf, --contractFile <filename>',
-        'Filename the contract is located in. This can include the relative path to the desired file.'
+        'Filename the contract is located in. This can include the relative path to the desired file.',
     )
     .option(
         '-d, --data',
         'Gets the values in the storage slots from an Ethereum node.',
-        false
+        false,
     )
     .option(
         '-s, --storage <address>',
-        'The address of the contract with the storage values. This will be different from the contract with the code if a proxy contract is used. This is not needed if `fileFolderAddress` is an address and the contract is not proxied.'
+        'The address of the contract with the storage values. This will be different from the contract with the code if a proxy contract is used. This is not needed if `fileFolderAddress` is an address and the contract is not proxied.',
     )
     .addOption(
         new Option(
             '-u, --url <url>',
-            'URL of the Ethereum node to get storage values if the `data` option is used.'
+            'URL of the Ethereum node to get storage values if the `data` option is used.',
         )
             .env('NODE_URL')
-            .default('http://localhost:8545')
+            .default('http://localhost:8545'),
     )
     .option(
         '-bn, --block <number>',
         'Block number to get the contract storage values from.',
-        'latest'
+        'latest',
     )
     .option(
         '-a, --array <number>',
         'Number of slots to display at the start and end of arrays.',
-        '2'
+        '2',
     )
     .option('-hv, --hideValue', 'Hide storage slot value column.', false)
     .action(async (fileFolderAddress, options, command) => {
@@ -292,13 +292,13 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
             // If not an address and the contractName option has not been specified
             if (!isAddress(fileFolderAddress) && !combinedOptions.contract) {
                 throw Error(
-                    `Must use the \`-c, --contract <name>\` option to specify the contract to draw the storage diagram for when sourcing from local files.\nThis option is not needed when sourcing from a blockchain explorer with a contract address.`
+                    `Must use the \`-c, --contract <name>\` option to specify the contract to draw the storage diagram for when sourcing from local files.\nThis option is not needed when sourcing from a blockchain explorer with a contract address.`,
                 )
             }
 
             let { umlClasses, contractName } = await parserUmlClasses(
                 fileFolderAddress,
-                combinedOptions
+                combinedOptions,
             )
 
             contractName = combinedOptions.contract || contractName
@@ -307,7 +307,7 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
                 contractName,
                 umlClasses,
                 arrayItems,
-                combinedOptions.contractFile
+                combinedOptions.contractFile,
             )
 
             if (isAddress(fileFolderAddress)) {
@@ -320,13 +320,13 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
                 if (storageAddress) {
                     if (!isAddress(storageAddress)) {
                         throw Error(
-                            `Invalid address to get storage data from "${storageAddress}"`
+                            `Invalid address to get storage data from "${storageAddress}"`,
                         )
                     }
                 } else {
                     if (!isAddress(fileFolderAddress)) {
                         throw Error(
-                            `Can not get storage slot values if first param is not an address and the \`--storage\` option is not used.`
+                            `Can not get storage slot values if first param is not an address and the \`--storage\` option is not used.`,
                         )
                     }
                     storageAddress = fileFolderAddress
@@ -335,11 +335,11 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
                 let block = combinedOptions.block
                 if (block === 'latest') {
                     const provider = new ethers.providers.JsonRpcProvider(
-                        combinedOptions.url
+                        combinedOptions.url,
                     )
                     block = await provider.getBlockNumber()
                     debug(
-                        `Latest block is ${block}. All storage slot values will be from this block.`
+                        `Latest block is ${block}. All storage slot values will be from this block.`,
                     )
                 }
 
@@ -350,7 +350,7 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
                         storageAddress,
                         storageSection,
                         arrayItems,
-                        block
+                        block,
                     )
                     // Add storage variables for dynamic arrays, strings and bytes
                     await addDynamicVariables(
@@ -359,21 +359,21 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
                         combinedOptions.url,
                         storageAddress,
                         arrayItems,
-                        block
+                        block,
                     )
                 }
             }
 
             const dotString = convertStorages2Dot(
                 storageSections,
-                combinedOptions
+                combinedOptions,
             )
 
             await writeOutputFiles(
                 dotString,
                 contractName || 'storageDiagram',
                 combinedOptions.outputFormat,
-                combinedOptions.outputFileName
+                combinedOptions.outputFileName,
             )
         } catch (err) {
             console.error(err)
@@ -392,11 +392,11 @@ In order for the merged code to compile, the following is done:
 2. All pragma solidity lines in the source files are commented out.
 3. File imports are commented out.
 4. "SPDX-License-Identifier" is renamed to "SPDX--License-Identifier".
-5. Contract dependencies are analysed so the files are merged in an order that will compile.\n`
+5. Contract dependencies are analysed so the files are merged in an order that will compile.\n`,
     )
     .argument(
         '<contractAddress>',
-        'Contract address in hexadecimal format with a 0x prefix.'
+        'Contract address in hexadecimal format with a 0x prefix.',
     )
     .action(async (contractAddress, options, command) => {
         try {
@@ -410,7 +410,7 @@ In order for the merged code to compile, the following is done:
             const etherscanParser = new EtherscanParser(
                 combinedOptions.apiKey,
                 combinedOptions.network,
-                combinedOptions.explorerUrl
+                combinedOptions.explorerUrl,
             )
 
             const { solidityCode, contractName } =
@@ -434,43 +434,43 @@ program
 
 The results show the comparison of contract A to B.
 The ${clc.green(
-            'green'
+            'green',
         )} sections are additions to contract B that are not in contract A.
 The ${clc.red(
-            'red'
+            'red',
         )} sections are removals from contract A that are not in contract B.
-The line numbers are from contract B. There are no line numbers for the red sections as they are not in contract B.\n`
+The line numbers are from contract B. There are no line numbers for the red sections as they are not in contract B.\n`,
     )
     .argument(
         '<addressA>',
-        'Contract address in hexadecimal format with a 0x prefix of the first contract.'
+        'Contract address in hexadecimal format with a 0x prefix of the first contract.',
     )
     .argument(
         '<addressB>',
-        'Contract address in hexadecimal format with a 0x prefix of the second contract.'
+        'Contract address in hexadecimal format with a 0x prefix of the second contract.',
     )
     .addOption(
         new Option(
             '-l, --lineBuffer <value>',
-            'Minimum number of lines before and after changes'
-        ).default('4')
+            'Minimum number of lines before and after changes',
+        ).default('4'),
     )
     .addOption(
         new Option(
             '-af --aFile <value>',
-            'Contract A source code filename without the .sol extension. (default: compares all source files)'
-        )
+            'Contract A source code filename without the .sol extension. (default: compares all source files)',
+        ),
     )
     .addOption(
         new Option(
             '-bf --bFile <value>',
-            'Contract B source code filename without the .sol extension. (default: aFile if specified)'
-        )
+            'Contract B source code filename without the .sol extension. (default: aFile if specified)',
+        ),
     )
     .option(
         '-s, --saveFiles',
         'Save the flattened contract code to the filesystem. The file names will be the contract address with a .sol extension.',
-        false
+        false,
     )
     .action(async (addressA, addressB, options, command) => {
         try {
@@ -485,33 +485,33 @@ The line numbers are from contract B. There are no line numbers for the red sect
             const lineBuffer = parseInt(options.lineBuffer)
             if (isNaN(lineBuffer))
                 throw Error(
-                    `Invalid line buffer "${options.lineBuffer}". Must be a number`
+                    `Invalid line buffer "${options.lineBuffer}". Must be a number`,
                 )
 
             const etherscanParser = new EtherscanParser(
                 combinedOptions.apiKey,
                 combinedOptions.network,
-                combinedOptions.explorerUrl
+                combinedOptions.explorerUrl,
             )
 
             // Get verified Solidity code from Etherscan and flatten
             const { solidityCode: codeA, contractName: contractNameA } =
                 await etherscanParser.getSolidityCode(
                     addressA,
-                    combinedOptions.aFile
+                    combinedOptions.aFile,
                 )
             const { solidityCode: codeB, contractName: contractNameB } =
                 await etherscanParser.getSolidityCode(
                     addressB,
-                    combinedOptions.bFile || combinedOptions.aFile
+                    combinedOptions.bFile || combinedOptions.aFile,
                 )
 
             console.log(`Difference between`)
             console.log(
-                `A. ${addressA} ${contractNameA} on ${combinedOptions.network}`
+                `A. ${addressA} ${contractNameA} on ${combinedOptions.network}`,
             )
             console.log(
-                `B. ${addressB} ${contractNameB} on ${combinedOptions.network}\n`
+                `B. ${addressB} ${contractNameB} on ${combinedOptions.network}\n`,
             )
 
             diffCode(codeA, codeB, lineBuffer)

@@ -16,7 +16,7 @@ export const convertStorages2Dot = (
         fillColor: string
         textColor: string
         hideValues?: boolean
-    }
+    },
 ): string => {
     let dotString: string = `
 digraph StorageDiagram {
@@ -51,7 +51,7 @@ node [shape=record, style=filled, color="${options.shapeColor}", fillcolor="${op
 export function convertStorage2Dot(
     storageSection: StorageSection,
     dotString: string,
-    options: { data: boolean; hideValues?: boolean }
+    options: { data: boolean; hideValues?: boolean },
 ): string {
     // write storage header with name and optional address
     dotString += `\n${storageSection.id} [label="${storageSection.name} \\<\\<${
@@ -61,14 +61,14 @@ export function convertStorage2Dot(
     dotString += ' | {'
 
     const startingVariables = storageSection.variables.filter(
-        (s) => s.byteOffset === 0
+        (s) => s.byteOffset === 0,
     )
     // for each slot displayed, does is have any variables with parsed data?
     const displayData = startingVariables.map((startVar) =>
         storageSection.variables.some(
             (variable) =>
-                variable.fromSlot === startVar.fromSlot && variable.parsedValue
-        )
+                variable.fromSlot === startVar.fromSlot && variable.parsedValue,
+        ),
     )
 
     const linePad = '\\n\\ '
@@ -111,7 +111,7 @@ export function convertStorage2Dot(
     startingVariables.forEach((variable) => {
         // Get all the storage variables in this slot
         const slotVariables = storageSection.variables.filter(
-            (s) => s.fromSlot === variable.fromSlot
+            (s) => s.fromSlot === variable.fromSlot,
         )
         const usedBytes = slotVariables.reduce((acc, s) => acc + s.byteSize, 0)
         if (usedBytes < 32) {
@@ -138,7 +138,7 @@ export function convertStorage2Dot(
             if (i === 0) {
                 dotString += ` | { ${dotVariable(
                     variable,
-                    storageSection.name
+                    storageSection.name,
                 )} `
             } else {
                 dotString += ` | ${dotVariable(variable, storageSection.name)} `

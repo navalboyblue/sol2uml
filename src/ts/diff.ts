@@ -68,7 +68,7 @@ const diff_pretty = (diffs: Diff[], lines: number, lineBuff = 2) => {
                         eolPositions,
                         lineBuff,
                         lineCount,
-                        linePad
+                        linePad,
                     )
                 } else {
                     // else the first n lines and last n lines
@@ -77,7 +77,7 @@ const diff_pretty = (diffs: Diff[], lines: number, lineBuff = 2) => {
                         eolPositions,
                         lineBuff,
                         lineCount,
-                        linePad
+                        linePad,
                     )
                 }
                 lineCount += eolPositions.length
@@ -97,7 +97,7 @@ const firstLines = (
     eolPositions: number[],
     lineBuff: number,
     lineStart: number,
-    linePad: number
+    linePad: number,
 ): string => {
     const lines = text.slice(0, eolPositions[lineBuff])
     return addLineNumbers(lines, lineStart, linePad)
@@ -110,7 +110,7 @@ const lastLines = (
     text: string,
     eolPositions: number[],
     lineBuff: number,
-    linePad: number
+    linePad: number,
 ): string => {
     const eolFrom = eolPositions.length - (lineBuff + 1)
     let lines = text
@@ -136,7 +136,7 @@ const firstAndLastLines = (
     eolPositions: number[],
     lineBuff: number,
     lineStart: number,
-    linePad: number
+    linePad: number,
 ): string => {
     if (eolPositions.length <= 2 * lineBuff) {
         return addLineNumbers(text, lineStart, linePad)
@@ -193,7 +193,7 @@ const countLines = (text: string): number => (text.match(/\n/g) || '').length
 const addLineNumbers = (
     text: string,
     lineStart: number,
-    linePad: number
+    linePad: number,
 ): string => {
     let lineCount = lineStart
     let textWithLineNumbers = ''

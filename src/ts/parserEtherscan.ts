@@ -39,7 +39,7 @@ export class EtherscanParser {
     constructor(
         protected apikey: string = 'ZAD4UI2RCXCQTP38EXS3UY2MPHFU5H9KB1',
         public network: Network = 'mainnet',
-        url?: string
+        url?: string,
     ) {
         if (url) {
             this.url = url
@@ -47,7 +47,7 @@ export class EtherscanParser {
         }
         if (!networks.includes(network)) {
             throw new Error(
-                `Invalid network "${network}". Must be one of ${networks}`
+                `Invalid network "${network}". Must be one of ${networks}`,
             )
         } else if (network === 'mainnet') {
             this.url = 'https://api.etherscan.io/api'
@@ -96,7 +96,7 @@ export class EtherscanParser {
         contractName: string
     }> {
         const { files, contractName, remappings } = await this.getSourceCode(
-            contractAddress
+            contractAddress,
         )
 
         let umlClasses: UmlClass[] = []
@@ -107,7 +107,7 @@ export class EtherscanParser {
             const umlClass = convertAST2UmlClasses(
                 node,
                 file.filename,
-                remappings
+                remappings,
             )
             umlClasses = umlClasses.concat(umlClass)
         }
@@ -126,7 +126,7 @@ export class EtherscanParser {
      */
     async getSolidityCode(
         contractAddress: string,
-        filename?: string
+        filename?: string,
     ): Promise<{ solidityCode: string; contractName: string }> {
         const { files, contractName, compilerVersion, remappings } =
             await this.getSourceCode(contractAddress, filename)
@@ -138,7 +138,7 @@ export class EtherscanParser {
             const umlClass = convertAST2UmlClasses(
                 node,
                 file.filename,
-                remappings
+                remappings,
             )
             umlClasses = umlClasses.concat(umlClass)
         }
@@ -147,19 +147,19 @@ export class EtherscanParser {
         const topologicalSortedClasses = topologicalSortClasses(umlClasses)
         // Get a list of filenames the classes are in
         const sortedFilenames = topologicalSortedClasses.map(
-            (umlClass) => umlClass.relativePath
+            (umlClass) => umlClass.relativePath,
         )
         // Remove duplicate filenames from the list
         const dependentFilenames = [...new Set(sortedFilenames)]
 
         // find any files that didn't have dependencies found
         const nonDependentFiles = files.filter(
-            (f) => !dependentFilenames.includes(f.filename)
+            (f) => !dependentFilenames.includes(f.filename),
         )
         const nonDependentFilenames = nonDependentFiles.map((f) => f.filename)
         if (nonDependentFilenames.length) {
             debug(
-                `Failed to find dependencies to files: ${nonDependentFilenames}`
+                `Failed to find dependencies to files: ${nonDependentFilenames}`,
             )
         }
 
@@ -179,7 +179,7 @@ export class EtherscanParser {
             // comment out any pragma solidity lines as its set from the compiler version
             const removedPragmaSolidity = file.code.replace(
                 /(\s)(pragma\s+solidity.*;)/gm,
-                '$1/* $2 */'
+                '$1/* $2 */',
             )
 
             // comment out any import statements
@@ -188,7 +188,7 @@ export class EtherscanParser {
             // replace all in file and match across multiple lines
             const removedImports = removedPragmaSolidity.replace(
                 /^\s*?(import.*?;)/gms,
-                '/* $1 */'
+                '/* $1 */',
             )
             // Rename SPDX-License-Identifier to SPDX--License-Identifier so the merged file will compile
             const removedSPDX = removedImports.replace(/SPDX-/, 'SPDX--')
@@ -213,7 +213,7 @@ export class EtherscanParser {
         } catch (err) {
             throw new Error(
                 `Failed to parse solidity code from source code:\n${sourceCode}`,
-                { cause: err }
+                { cause: err },
             )
         }
     }
@@ -225,7 +225,7 @@ export class EtherscanParser {
      */
     async getSourceCode(
         contractAddress: string,
-        filename?: string
+        filename?: string,
     ): Promise<{
         files: readonly { code: string; filename: string }[]
         contractName: string
@@ -236,7 +236,7 @@ export class EtherscanParser {
 
         try {
             debug(
-                `About to get Solidity source code for ${contractAddress} from ${this.url}`
+                `About to get Solidity source code for ${contractAddress} from ${this.url}`,
             )
             const response: any = await axios.get(this.url, {
                 params: {
@@ -250,8 +250,8 @@ export class EtherscanParser {
             if (!Array.isArray(response?.data?.result)) {
                 throw new Error(
                     `Failed to ${description}. No result array in HTTP data: ${JSON.stringify(
-                        response?.data
-                    )}`
+                        response?.data,
+                    )}`,
                 )
             }
 
@@ -259,7 +259,7 @@ export class EtherscanParser {
             const results = response.data.result.map((result: any) => {
                 if (!result.SourceCode) {
                     throw new Error(
-                        `Failed to ${description}. Most likely the contract has not been verified on Etherscan.`
+                        `Failed to ${description}. Most likely the contract has not been verified on Etherscan.`,
                     )
                 }
                 // if multiple Solidity source files
@@ -275,7 +275,7 @@ export class EtherscanParser {
 
                         // Get any remapping of filenames from the settings
                         remappings = parseRemappings(
-                            sourceCodeObject.settings?.remappings
+                            sourceCodeObject.settings?.remappings,
                         )
 
                         // The getsource response from Etherscan is inconsistent so we need to handle both shapes
@@ -285,16 +285,16 @@ export class EtherscanParser {
                         return sourceFiles.map(
                             ([filename, code]: [
                                 string,
-                                { content: string }
+                                { content: string },
                             ]) => ({
                                 code: code.content,
                                 filename,
-                            })
+                            }),
                         )
                     } catch (err) {
                         throw new Error(
                             `Failed to parse Solidity source code from Etherscan's SourceCode. ${result.SourceCode}`,
-                            { cause: err }
+                            { cause: err },
                         )
                     }
                 }
@@ -303,13 +303,13 @@ export class EtherscanParser {
                     const sourceFiles = Object.values(result.SourceCode.sources)
                     // Get any remapping of filenames from the settings
                     remappings = parseRemappings(
-                        result.SourceCode.settings?.remappings
+                        result.SourceCode.settings?.remappings,
                     )
                     return sourceFiles.map(
                         ([filename, code]: [string, { content: string }]) => ({
                             code: code.content,
                             filename,
-                        })
+                        }),
                     )
                 }
                 // Solidity source code was not uploaded into multiple files so is just in the SourceCode field
@@ -323,11 +323,11 @@ export class EtherscanParser {
             if (filename) {
                 files = files.filter(
                     (r: { filename: string }) =>
-                        path.parse(r.filename).base == filenameWithExt
+                        path.parse(r.filename).base == filenameWithExt,
                 )
                 if (!files?.length) {
                     throw new Error(
-                        `Failed to find source file "${filename}" for contract ${contractAddress}`
+                        `Failed to find source file "${filename}" for contract ${contractAddress}`,
                     )
                 }
             }
@@ -346,7 +346,7 @@ export class EtherscanParser {
             }
             throw new Error(
                 `Failed to ${description}. HTTP status code ${err.response?.status}, status text: ${err.response?.statusText}`,
-                { cause: err }
+                { cause: err },
             )
         }
     }

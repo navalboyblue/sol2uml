@@ -36,10 +36,10 @@ export const addSlotValues = async (
     contractAddress: string,
     storageSection: StorageSection,
     arrayItems: number,
-    blockTag: BigNumberish
+    blockTag: BigNumberish,
 ) => {
     const valueVariables = storageSection.variables.filter(
-        (variable) => variable.getValue && !variable.slotValue
+        (variable) => variable.getValue && !variable.slotValue,
     )
     if (valueVariables.length === 0) return
 
@@ -80,7 +80,7 @@ export const addSlotValues = async (
         for (const variable of storageSection.variables) {
             if (variable.getValue && variable.fromSlot === fromSlot) {
                 debug(
-                    `Set slot value ${value} for section "${storageSection.name}", var type ${variable.type}, slot ${variable.fromSlot} offset ${storageSection.offset}`
+                    `Set slot value ${value} for section "${storageSection.name}", var type ${variable.type}, slot ${variable.fromSlot} offset ${storageSection.offset}`,
                 )
                 variable.slotValue = value
                 // parse variable value from slot data
@@ -89,7 +89,7 @@ export const addSlotValues = async (
                 }
             }
             // if variable is past the slot that has the value
-            else if (variable.toSlot > fromSlot) {
+            else if (BigNumber.from(variable.toSlot).gt(fromSlot)) {
                 break
             }
         }
@@ -123,14 +123,14 @@ export const parseValue = (variable: Variable): string => {
     } catch (err) {
         throw Error(
             `Failed to parse variable ${variable.name} of type ${variable.type}, value "${variableValue}"`,
-            { cause: err }
+            { cause: err },
         )
     }
 }
 
 const parseUserDefinedValue = (
     variable: Variable,
-    variableValue: string
+    variableValue: string,
 ): string => {
     // TODO need to handle User Defined Value Types introduced in Solidity
     // https://docs.soliditylang.org/en/v0.8.18/types.html#user-defined-value-types
@@ -153,14 +153,14 @@ const parseUserDefinedValue = (
 
 const parseElementaryValue = (
     variable: Variable,
-    variableValue: string
+    variableValue: string,
 ): string => {
     // Elementary types
     if (variable.type === 'bool') {
         if (variableValue === '00') return 'false'
         if (variableValue === '01') return 'true'
         throw Error(
-            `Failed to parse bool variable "${variable.name}" in slot ${variable.fromSlot}, offset ${variable.byteOffset} and slot value "${variableValue}"`
+            `Failed to parse bool variable "${variable.name}" in slot ${variable.fromSlot}, offset ${variable.byteOffset} and slot value "${variableValue}"`,
         )
     }
     if (variable.type === 'string' || variable.type === 'bytes') {
@@ -233,7 +233,7 @@ export const getSlotValues = async (
     url: string,
     contractAddress: string,
     slotKeys: readonly BigNumberish[],
-    blockTag: BigNumberish | 'latest' = 'latest'
+    blockTag: BigNumberish | 'latest' = 'latest',
 ): Promise<string[]> => {
     try {
         if (slotKeys.length === 0) {
@@ -256,7 +256,7 @@ export const getSlotValues = async (
         debug(
             `About to get ${
                 slotKeys.length
-            } storage values for ${contractAddress} at block ${blockTag} from slot ${missingKeys[0].toString()}`
+            } storage values for ${contractAddress} at block ${blockTag} from slot ${missingKeys[0].toString()}`,
         )
         // Get the values for the missing slot keys
         const payload = missingKeys.map((key) => ({
@@ -272,17 +272,17 @@ export const getSlotValues = async (
         }
         if (response.data.length !== missingKeys.length) {
             throw Error(
-                `Requested ${missingKeys.length} storage slot values but only got ${response.data.length}`
+                `Requested ${missingKeys.length} storage slot values but only got ${response.data.length}`,
             )
         }
         const responseData = response.data as StorageAtResponse[]
         const sortedResponses = responseData.sort((a, b) =>
-            BigNumber.from(a.id).gt(b.id) ? 1 : -1
+            BigNumber.from(a.id).gt(b.id) ? 1 : -1,
         )
         const missingValues = sortedResponses.map((data) => {
             if (data.error) {
                 throw Error(
-                    `json rpc call with id ${data.id} failed to get storage values: ${data.error?.message}`
+                    `json rpc call with id ${data.id} failed to get storage values: ${data.error?.message}`,
                 )
             }
             return '0x' + data.result.toUpperCase().slice(2)
@@ -291,12 +291,12 @@ export const getSlotValues = async (
         return SlotValueCache.addSlotValues(
             slotKeys,
             missingKeys,
-            missingValues
+            missingValues,
         )
     } catch (err) {
         throw Error(
             `Failed to get ${slotKeys.length} storage values for contract ${contractAddress} from ${url}`,
-            { cause: err }
+            { cause: err },
         )
     }
 }
@@ -314,7 +314,7 @@ export const getSlotValue = async (
     url: string,
     contractAddress: string,
     slotKey: BigNumberish,
-    blockTag: BigNumberish | 'latest'
+    blockTag: BigNumberish | 'latest',
 ) => {
     debug(`About to get storage slot ${slotKey} value for ${contractAddress}`)
 
@@ -322,7 +322,7 @@ export const getSlotValue = async (
         url,
         contractAddress,
         [slotKey],
-        blockTag
+        blockTag,
     )
 
     return values[0]
@@ -353,7 +353,7 @@ export const dynamicSlotSize = (variable: {
     } catch (err) {
         throw Error(
             `Failed to calculate dynamic slot size for variable "${variable?.name}" of type "${variable?.type}" with slot value ${variable?.slotValue}`,
-            { cause: err }
+            { cause: err },
         )
     }
 }

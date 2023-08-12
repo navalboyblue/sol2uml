@@ -33,7 +33,7 @@ export interface ClassOptions {
 
 export const convertClass2Dot = (
     umlClass: UmlClass,
-    options: ClassOptions = {}
+    options: ClassOptions = {},
 ): string => {
     // do not include library, interface, abstracts, struct or enum classes if hidden
     if (
@@ -55,7 +55,7 @@ export const convertClass2Dot = (
 
     let dotString = `\n${umlClass.id} [label="{${dotClassTitle(
         umlClass,
-        options
+        options,
     )}`
 
     // Add attributes
@@ -75,7 +75,7 @@ export const convertClass2Dot = (
 
 const dotClassTitle = (
     umlClass: UmlClass,
-    options: { hideFilename?: boolean } = {}
+    options: { hideFilename?: boolean } = {},
 ): string => {
     let stereoName: string = ''
     const relativePath =
@@ -111,7 +111,7 @@ const dotClassTitle = (
 
 const dotAttributeVisibilities = (
     umlClass: UmlClass,
-    options: { hidePrivates?: boolean; hideSourceContract?: boolean }
+    options: { hidePrivates?: boolean; hideSourceContract?: boolean },
 ): string => {
     if (umlClass.attributes.length === 0) return ''
 
@@ -173,7 +173,7 @@ const dotAttributes = (
     attributes: Attribute[],
     options: { hideSourceContract?: boolean },
     vizGroup?: string,
-    indent = true
+    indent = true,
 ): string => {
     if (!attributes || attributes.length === 0) {
         return ''
@@ -200,7 +200,7 @@ const dotOperatorVisibilities = (
         hidePrivates?: boolean
         hideModifiers?: boolean
         hideEvents?: boolean
-    }
+    },
 ): string => {
     if (umlClass.operators.length === 0) return ''
 
@@ -255,7 +255,7 @@ const dotOperators = (
         hideModifiers?: boolean
         hideEvents?: boolean
         hideSourceContract?: boolean
-    }
+    },
 ): string => {
     // Skip if there are no operators
     if (!operators || operators.length === 0) {
@@ -276,7 +276,7 @@ const dotOperators = (
                     o.stereotype === OperatorStereotype.Modifier) ||
                 (options.hideEvents === true &&
                     o.stereotype === OperatorStereotype.Event)
-            )
+            ),
     )
 
     for (const operator of operatorsFiltered) {
@@ -309,7 +309,7 @@ const dotOperators = (
 
 const dotOperatorStereotype = (
     umlClass: UmlClass,
-    operatorStereotype: OperatorStereotype
+    operatorStereotype: OperatorStereotype,
 ): string => {
     let dotString = ''
 
@@ -340,7 +340,7 @@ const dotOperatorStereotype = (
 
 const dotParameters = (
     parameters: Parameter[],
-    returnParams: boolean = false
+    returnParams: boolean = false,
 ): string => {
     if (parameters.length == 1 && !parameters[0].name) {
         if (returnParams) {

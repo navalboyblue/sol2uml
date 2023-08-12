@@ -47,11 +47,11 @@ export class SlotValueCache {
     public static addSlotValues(
         slotKeys: readonly BigNumberish[],
         missingKeys: readonly string[],
-        missingValues: readonly string[]
+        missingValues: readonly string[],
     ): string[] {
         if (missingKeys?.length !== missingValues?.length) {
             throw Error(
-                `${missingKeys?.length} keys does not match ${missingValues?.length} values`
+                `${missingKeys?.length} keys does not match ${missingValues?.length} values`,
             )
         }
         missingKeys.forEach((key, i) => {

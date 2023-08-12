@@ -68,7 +68,7 @@ export const convertClasses2StorageSections = (
     contractName: string,
     umlClasses: UmlClass[],
     arrayItems: number,
-    contractFilename?: string
+    contractFilename?: string,
 ): StorageSection[] => {
     // Find the base UML Class from the base contract name
     const umlClass = umlClasses.find(({ name, relativePath }) => {
@@ -87,7 +87,7 @@ export const convertClasses2StorageSections = (
             ? ` in filename "${contractFilename}"`
             : ''
         throw Error(
-            `Failed to find contract with name "${contractName}"${contractFilenameError}.\nIs the \`-c --contract <name>\` option correct?`
+            `Failed to find contract with name "${contractName}"${contractFilenameError}.\nIs the \`-c --contract <name>\` option correct?`,
         )
     }
     debug(`Found contract "${contractName}" in ${umlClass.absolutePath}`)
@@ -100,7 +100,7 @@ export const convertClasses2StorageSections = (
         storageSections,
         [],
         false,
-        arrayItems
+        arrayItems,
     )
 
     // Add new storage section to the beginning of the array
@@ -135,7 +135,7 @@ const parseVariables = (
     storageSections: StorageSection[],
     inheritedContracts: string[],
     mapping: boolean,
-    arrayItems: number
+    arrayItems: number,
 ): Variable[] => {
     // Add storage slots from inherited contracts first.
     // Get immediate parent contracts that the class inherits from
@@ -143,18 +143,18 @@ const parseVariables = (
     // Filter out any already inherited contracts
     const newInheritedContracts = parentContracts.filter(
         (parentContract) =>
-            !inheritedContracts.includes(parentContract.targetUmlClassName)
+            !inheritedContracts.includes(parentContract.targetUmlClassName),
     )
     // Mutate inheritedContracts to include the new inherited contracts
     inheritedContracts.push(
-        ...newInheritedContracts.map((c) => c.targetUmlClassName)
+        ...newInheritedContracts.map((c) => c.targetUmlClassName),
     )
     // Recursively parse each new inherited contract
     newInheritedContracts.forEach((parent) => {
         const parentClass = findAssociatedClass(parent, umlClass, umlClasses)
         if (!parentClass) {
             throw Error(
-                `Failed to find inherited contract "${parent.targetUmlClassName}" of "${umlClass.absolutePath}"`
+                `Failed to find inherited contract "${parent.targetUmlClassName}" of "${umlClass.absolutePath}"`,
             )
         }
         // recursively parse inherited contract
@@ -165,7 +165,7 @@ const parseVariables = (
             storageSections,
             inheritedContracts,
             mapping,
-            arrayItems
+            arrayItems,
         )
     })
 
@@ -177,7 +177,7 @@ const parseVariables = (
         const { size: byteSize, dynamic } = calcStorageByteSize(
             attribute,
             umlClass,
-            umlClasses
+            umlClasses,
         )
 
         // parse any dependent storage sections or enums
@@ -187,7 +187,7 @@ const parseVariables = (
             umlClasses,
             storageSections,
             mapping || attribute.attributeType === AttributeType.Mapping,
-            arrayItems
+            arrayItems,
         )
 
         // should this new variable get the slot value
@@ -195,7 +195,7 @@ const parseVariables = (
             attribute.attributeType,
             dynamic,
             mapping,
-            references?.storageSection?.type
+            references?.storageSection?.type,
         )
         const getValue = calcGetValue(attribute.attributeType, mapping)
 
@@ -250,7 +250,7 @@ const parseVariables = (
 const adjustSlots = (
     storageSection: StorageSection,
     slotOffset: number,
-    storageSections: StorageSection[]
+    storageSections: StorageSection[],
 ) => {
     storageSection.variables.forEach((variable) => {
         // offset storage slots
@@ -259,7 +259,7 @@ const adjustSlots = (
 
         // find storage section that the variable is referencing
         const referenceStorageSection = storageSections.find(
-            (ss) => ss.id === variable.referenceSectionId
+            (ss) => ss.id === variable.referenceSectionId,
         )
 
         if (referenceStorageSection) {
@@ -269,13 +269,13 @@ const adjustSlots = (
                 adjustSlots(
                     referenceStorageSection,
                     variable.fromSlot,
-                    storageSections
+                    storageSections,
                 )
             } else if (variable.attributeType === AttributeType.Array) {
                 // attribute is a dynamic array
                 referenceStorageSection.offset = calcSectionOffset(
                     variable,
-                    storageSection.offset
+                    storageSection.offset,
                 )
 
                 adjustSlots(referenceStorageSection, 0, storageSections)
@@ -302,7 +302,7 @@ export const parseStorageSectionFromAttribute = (
     otherClasses: readonly UmlClass[],
     storageSections: StorageSection[],
     mapping: boolean,
-    arrayItems: number
+    arrayItems: number,
 ): {
     storageSection: StorageSection
     enumValues?: string[]
@@ -319,7 +319,7 @@ export const parseStorageSectionFromAttribute = (
         // address[][4][2] will have base type address[][4]
         const baseType = attribute.type.substring(
             0,
-            attribute.type.lastIndexOf('[')
+            attribute.type.lastIndexOf('['),
         )
         let baseAttributeType: AttributeType
         if (isElementary(baseType)) {
@@ -355,7 +355,7 @@ export const parseStorageSectionFromAttribute = (
                 otherClasses,
                 storageSections,
                 mapping,
-                arrayItems
+                arrayItems,
             )
         }
 
@@ -363,7 +363,7 @@ export const parseStorageSectionFromAttribute = (
             baseAttribute.attributeType,
             dynamicBase,
             mapping,
-            references?.storageSection?.type
+            references?.storageSection?.type,
         )
         const getValue = calcGetValue(attribute.attributeType, mapping)
 
@@ -403,7 +403,7 @@ export const parseStorageSectionFromAttribute = (
                         otherClasses,
                         storageSections,
                         mapping,
-                        arrayItems
+                        arrayItems,
                     )
                     variable.referenceSectionId = references?.storageSection?.id
                     variable.enumValues = references?.enumValues
@@ -430,7 +430,7 @@ export const parseStorageSectionFromAttribute = (
             attribute.type,
             attribute,
             umlClass,
-            otherClasses
+            otherClasses,
         )
 
         if (typeClass.stereotype === ClassStereotype.Struct) {
@@ -441,7 +441,7 @@ export const parseStorageSectionFromAttribute = (
                 storageSections,
                 [],
                 mapping,
-                arrayItems
+                arrayItems,
             )
             const storageSection = {
                 id: storageId++,
@@ -473,7 +473,7 @@ export const parseStorageSectionFromAttribute = (
                 result[1],
                 attribute,
                 umlClass,
-                otherClasses
+                otherClasses,
             )
 
             if (typeClass.stereotype === ClassStereotype.Struct) {
@@ -484,7 +484,7 @@ export const parseStorageSectionFromAttribute = (
                     storageSections,
                     [],
                     true,
-                    arrayItems
+                    arrayItems,
                 )
                 const storageSection = {
                     id: storageId++,
@@ -512,7 +512,7 @@ export const parseStorageSectionFromAttribute = (
 const addArrayVariables = (
     arrayLength: number,
     arrayItems: number,
-    variables: Variable[]
+    variables: Variable[],
 ) => {
     const arraySlotSize = variables[0].byteSize
     const itemsPerSlot = Math.floor(32 / arraySlotSize)
@@ -588,7 +588,7 @@ const findTypeClass = (
     userType: string,
     attribute: Attribute,
     umlClass: UmlClass,
-    otherClasses: readonly UmlClass[]
+    otherClasses: readonly UmlClass[],
 ): UmlClass => {
     // Find associated UserDefined type
     const types = userType.split('.')
@@ -599,7 +599,7 @@ const findTypeClass = (
     const typeClass = findAssociatedClass(association, umlClass, otherClasses)
     if (!typeClass) {
         throw Error(
-            `Failed to find user defined type "${userType}" in attribute "${attribute.name}" of type "${attribute.attributeType}""`
+            `Failed to find user defined type "${userType}" in attribute "${attribute.name}" of type "${attribute.attributeType}""`,
         )
     }
     return typeClass
@@ -609,7 +609,7 @@ const findTypeClass = (
 export const calcStorageByteSize = (
     attribute: Attribute,
     umlClass: UmlClass,
-    otherClasses: readonly UmlClass[]
+    otherClasses: readonly UmlClass[],
 ): { size: number; dynamic: boolean } => {
     if (
         attribute.attributeType === AttributeType.Mapping ||
@@ -634,7 +634,7 @@ export const calcStorageByteSize = (
             const dimensionNum = findDimensionLength(
                 umlClass,
                 dimension,
-                otherClasses
+                otherClasses,
             )
             fixedDimensions.push(dimensionNum)
             // read the next dimension for the next loop
@@ -660,7 +660,7 @@ export const calcStorageByteSize = (
             ;({ size: elementSize } = calcStorageByteSize(
                 elementAttribute,
                 umlClass,
-                otherClasses
+                otherClasses,
             ))
         } else {
             const elementAttribute: Attribute = {
@@ -671,7 +671,7 @@ export const calcStorageByteSize = (
             ;({ size: elementSize } = calcStorageByteSize(
                 elementAttribute,
                 umlClass,
-                otherClasses
+                otherClasses,
             ))
         }
         // Anything over 16 bytes, like an address, will take a whole 32 byte slot
@@ -682,7 +682,7 @@ export const calcStorageByteSize = (
         if (fixedDimensions.length < arrayDimensions.length) {
             const totalDimensions = fixedDimensions.reduce(
                 (total, dimension) => total * dimension,
-                1
+                1,
             )
             return {
                 size: 32 * totalDimensions,
@@ -714,7 +714,7 @@ export const calcStorageByteSize = (
             attribute.type,
             attribute,
             umlClass,
-            otherClasses
+            otherClasses,
         )
 
         switch (attributeTypeClass.stereotype) {
@@ -742,7 +742,7 @@ export const calcStorageByteSize = (
                             structAttribute.type,
                             structAttribute,
                             umlClass,
-                            otherClasses
+                            otherClasses,
                         )
                         // If a struct
                         if (
@@ -755,7 +755,7 @@ export const calcStorageByteSize = (
                     const { size: attributeSize } = calcStorageByteSize(
                         structAttribute,
                         umlClass,
-                        otherClasses
+                        otherClasses,
                     )
                     // check if attribute will fit into the remaining slot
                     const endCurrentSlot = Math.ceil(structByteSize / 32) * 32
@@ -792,11 +792,11 @@ export const calcStorageByteSize = (
                 return { size: 32, dynamic: false }
             default:
                 const result = attribute.type.match(
-                    /[u]*(int|fixed|bytes)([0-9]+)/
+                    /[u]*(int|fixed|bytes)([0-9]+)/,
                 )
                 if (result === null || !result[2]) {
                     throw Error(
-                        `Failed size elementary type "${attribute.type}"`
+                        `Failed size elementary type "${attribute.type}"`,
                     )
                 }
                 // If bytes
@@ -811,7 +811,7 @@ export const calcStorageByteSize = (
         }
     }
     throw new Error(
-        `Failed to calc bytes size of attribute with name "${attribute.name}" and type ${attribute.type}`
+        `Failed to calc bytes size of attribute with name "${attribute.name}" and type ${attribute.type}`,
     )
 }
 
@@ -834,12 +834,12 @@ export const isElementary = (type: string): boolean => {
 
 export const calcSectionOffset = (
     variable: Variable,
-    sectionOffset = '0'
+    sectionOffset = '0',
 ): string => {
     if (variable.dynamic) {
         const hexStringOf32Bytes = hexZeroPad(
             BigNumber.from(variable.fromSlot).add(sectionOffset).toHexString(),
-            32
+            32,
         )
         return keccak256(hexStringOf32Bytes)
     }
@@ -849,7 +849,7 @@ export const calcSectionOffset = (
 export const findDimensionLength = (
     umlClass: UmlClass,
     dimension: string,
-    otherClasses: readonly UmlClass[]
+    otherClasses: readonly UmlClass[],
 ): number => {
     const dimensionNum = parseInt(dimension)
     if (Number.isInteger(dimensionNum)) {
@@ -858,7 +858,7 @@ export const findDimensionLength = (
 
     // Try and size array dimension from declared constants
     const constant = umlClass.constants.find(
-        (constant) => constant.name === dimension
+        (constant) => constant.name === dimension,
     )
     if (constant) {
         return constant.value
@@ -868,13 +868,13 @@ export const findDimensionLength = (
     const fileConstant = otherClasses.find(
         (umlClass) =>
             umlClass.name === dimension &&
-            umlClass.stereotype === ClassStereotype.Constant
+            umlClass.stereotype === ClassStereotype.Constant,
     )
     if (fileConstant?.constants[0]?.value) {
         return fileConstant.constants[0].value
     }
     throw Error(
-        `Could not size fixed sized array with dimension "${dimension}"`
+        `Could not size fixed sized array with dimension "${dimension}"`,
     )
 }
 
@@ -899,7 +899,7 @@ const calcDisplayValue = (
     attributeType: AttributeType,
     dynamic: boolean,
     mapping: boolean,
-    storageSectionType?: StorageSectionType
+    storageSectionType?: StorageSectionType,
 ): boolean =>
     mapping === false &&
     (attributeType === AttributeType.Elementary ||
@@ -922,7 +922,7 @@ const calcDisplayValue = (
  */
 const calcGetValue = (
     attributeType: AttributeType,
-    mapping: boolean
+    mapping: boolean,
 ): boolean => mapping === false && attributeType !== AttributeType.Mapping
 
 /**
@@ -940,7 +940,7 @@ export const addDynamicVariables = async (
     url: string,
     contractAddress: string,
     arrayItems: number,
-    blockTag: BigNumberish
+    blockTag: BigNumberish,
 ) => {
     for (const variable of storageSection.variables) {
         try {
@@ -949,7 +949,7 @@ export const addDynamicVariables = async (
             if (variable.type === 'string' || variable.type === 'bytes') {
                 if (!variable.slotValue) {
                     debug(
-                        `WARNING: Variable "${variable.name}" of type "${variable.type}" has no slot value`
+                        `WARNING: Variable "${variable.name}" of type "${variable.type}" has no slot value`,
                     )
                     continue
                 }
@@ -1009,7 +1009,7 @@ export const addDynamicVariables = async (
                         name: `${variable.type}: ${variable.name}`,
                         offset: calcSectionOffset(
                             variable,
-                            storageSection.offset
+                            storageSection.offset,
                         ),
                         type:
                             variable.type === 'string'
@@ -1028,7 +1028,7 @@ export const addDynamicVariables = async (
                         contractAddress,
                         newStorageSection,
                         arrayItems,
-                        blockTag
+                        blockTag,
                     )
 
                     storageSections.push(newStorageSection)
@@ -1042,7 +1042,7 @@ export const addDynamicVariables = async (
 
             // find storage section that the variable is referencing
             const referenceStorageSection = storageSections.find(
-                (ss) => ss.id === variable.referenceSectionId
+                (ss) => ss.id === variable.referenceSectionId,
             )
             if (!referenceStorageSection) continue
 
@@ -1054,12 +1054,12 @@ export const addDynamicVariables = async (
                 url,
                 contractAddress,
                 arrayItems,
-                blockTag
+                blockTag,
             )
 
             if (!variable.slotValue) {
                 debug(
-                    `WARNING: Dynamic array variable "${variable.name}" of type "${variable.type}" has no slot value`
+                    `WARNING: Dynamic array variable "${variable.name}" of type "${variable.type}" has no slot value`,
                 )
                 continue
             }
@@ -1071,7 +1071,7 @@ export const addDynamicVariables = async (
                 addArrayVariables(
                     arrayLength,
                     arrayItems,
-                    referenceStorageSection.variables
+                    referenceStorageSection.variables,
                 )
 
                 // // For the newly added variables
@@ -1102,12 +1102,12 @@ export const addDynamicVariables = async (
                 contractAddress,
                 referenceStorageSection,
                 arrayItems,
-                blockTag
+                blockTag,
             )
         } catch (err) {
             throw Error(
                 `Failed to add dynamic vars for section "${storageSection.name}", var type "${variable.type}" with value "${variable.slotValue}" from slot ${variable.fromSlot} and section offset ${storageSection.offset}`,
-                { cause: err }
+                { cause: err },
             )
         }
     }

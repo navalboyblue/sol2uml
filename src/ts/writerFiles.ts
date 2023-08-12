@@ -18,7 +18,7 @@ export const writeOutputFiles = async (
     dot: string,
     contractName: string,
     outputFormat: OutputFormats = 'svg',
-    outputFilename?: string
+    outputFilename?: string,
 ): Promise<void> => {
     // If all output then extension is svg
     const outputExt = outputFormat === 'all' ? 'svg' : outputFormat
@@ -111,7 +111,7 @@ export function writeDot(dot: string, filename: string) {
 export function writeSVG(
     svg: any,
     svgFilename = 'classDiagram.svg',
-    outputFormats: OutputFormats = 'png'
+    outputFormats: OutputFormats = 'png',
 ): Promise<void> {
     debug(`About to write SVN file to ${svgFilename}`)
 
@@ -130,7 +130,7 @@ export function writeSVG(
                 reject(
                     new Error(`Failed to write SVG file to ${svgFilename}`, {
                         cause: err,
-                    })
+                    }),
                 )
             } else {
                 console.log(`Generated svg file ${svgFilename}`)
@@ -168,8 +168,8 @@ export async function writePng(svg: any, filename: string): Promise<void> {
                             `Failed to write PNG file to ${pngFilename}`,
                             {
                                 cause: err,
-                            }
-                        )
+                            },
+                        ),
                     )
                 } else {
                     console.log(`Generated png file ${pngFilename}`)

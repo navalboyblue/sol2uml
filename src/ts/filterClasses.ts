@@ -19,7 +19,7 @@ const debug = require('debug')('sol2uml')
  */
 export const filterHiddenClasses = (
     umlClasses: readonly UmlClass[],
-    options: ClassOptions
+    options: ClassOptions,
 ): UmlClass[] => {
     return umlClasses.filter(
         (u) =>
@@ -35,7 +35,7 @@ export const filterHiddenClasses = (
                 !options.hideLibraries) ||
             ((u.stereotype === ClassStereotype.None ||
                 u.stereotype === ClassStereotype.Contract) &&
-                !options.hideContracts)
+                !options.hideContracts),
     )
 }
 
@@ -50,7 +50,7 @@ export const filterHiddenClasses = (
 export const classesConnectedToBaseContracts = (
     umlClasses: readonly UmlClass[],
     baseContractNames: readonly string[],
-    depth?: number
+    depth?: number,
 ): UmlClass[] => {
     let filteredUmlClasses: { [contractName: string]: UmlClass } = {}
 
@@ -63,7 +63,7 @@ export const classesConnectedToBaseContracts = (
                 umlClasses,
                 baseContractName,
                 weightedDirectedGraph,
-                depth
+                depth,
             ),
         }
     }
@@ -84,7 +84,7 @@ export const classesConnectedToBaseContract = (
     umlClasses: readonly UmlClass[],
     baseContractName: string,
     weightedDirectedGraph: WeightedDiGraph,
-    depth: number = 1000
+    depth: number = 1000,
 ): { [contractName: string]: UmlClass } => {
     // Find the base UML Class from the base contract name
     const baseUmlClass = umlClasses.find(({ name }) => {
@@ -93,7 +93,7 @@ export const classesConnectedToBaseContract = (
 
     if (!baseUmlClass) {
         throw Error(
-            `Failed to find base contract with name "${baseContractName}"`
+            `Failed to find base contract with name "${baseContractName}"`,
         )
     }
 
@@ -111,11 +111,11 @@ export const classesConnectedToBaseContract = (
 }
 
 function loadWeightedDirectedGraph(
-    umlClasses: readonly UmlClass[]
+    umlClasses: readonly UmlClass[],
 ): WeightedDiGraph {
     const weightedDirectedGraph = new WeightedDiGraph(
         // the number vertices in the graph
-        UmlClass.idCounter + 1
+        UmlClass.idCounter + 1,
     )
 
     for (const sourceUmlClass of umlClasses) {
@@ -124,7 +124,7 @@ function loadWeightedDirectedGraph(
             const targetUmlClass = findAssociatedClass(
                 association,
                 sourceUmlClass,
-                umlClasses
+                umlClasses,
             )
 
             if (!targetUmlClass) {
@@ -138,10 +138,10 @@ function loadWeightedDirectedGraph(
                     targetUmlClass.name
                 } with id ${targetUmlClass.id} and type ${
                     targetUmlClass.stereotype
-                }`
+                }`,
             )
             weightedDirectedGraph.addEdge(
-                new Edge(sourceUmlClass.id, targetUmlClass.id, 1)
+                new Edge(sourceUmlClass.id, targetUmlClass.id, 1),
             )
         }
     }
@@ -150,7 +150,7 @@ function loadWeightedDirectedGraph(
 }
 
 export const topologicalSortClasses = (
-    umlClasses: readonly UmlClass[]
+    umlClasses: readonly UmlClass[],
 ): UmlClass[] => {
     const directedAcyclicGraph = loadDirectedAcyclicGraph(umlClasses)
     const topologicalSort = new TopologicalSort(directedAcyclicGraph)
@@ -159,7 +159,7 @@ export const topologicalSortClasses = (
     const sortedUmlClassIds = topologicalSort.order().reverse()
     const sortedUmlClasses = sortedUmlClassIds.map((umlClassId) =>
         // Lookup the UmlClass for each class id
-        umlClasses.find((umlClass) => umlClass.id === umlClassId)
+        umlClasses.find((umlClass) => umlClass.id === umlClassId),
     )
 
     // Filter out any unfound classes. This happens when diff sources the second contract.
@@ -175,7 +175,7 @@ const loadDirectedAcyclicGraph = (umlClasses: readonly UmlClass[]): DiGraph => {
             const targetUmlClass = findAssociatedClass(
                 association,
                 sourceUmlClass,
-                umlClasses
+                umlClasses,
             )
 
             if (!targetUmlClass) {

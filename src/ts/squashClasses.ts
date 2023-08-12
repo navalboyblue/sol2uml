@@ -11,7 +11,7 @@ const debug = require('debug')('sol2uml')
  */
 export const squashUmlClasses = (
     umlClasses: UmlClass[],
-    baseContractNames: readonly string[]
+    baseContractNames: readonly string[],
 ): UmlClass[] => {
     let removedClassIds: number[] = []
     for (const baseContractName of baseContractNames) {
@@ -21,7 +21,7 @@ export const squashUmlClasses = (
         })
         if (baseIndex === undefined) {
             throw Error(
-                `Failed to find contract with name "${baseContractName}" to squash`
+                `Failed to find contract with name "${baseContractName}" to squash`,
             )
         }
         const baseClass = umlClasses[baseIndex]
@@ -37,7 +37,7 @@ export const squashUmlClasses = (
             [],
             baseClass,
             umlClasses,
-            1
+            1,
         )
         removedClassIds = removedClassIds.concat(result.removedClassIds)
 
@@ -53,7 +53,7 @@ export const squashUmlClasses = (
             // remove any squashed inherited contracts
             !removedClassIds.includes(u.id) ||
             // Include all base contracts
-            baseContractNames.includes(u.name)
+            baseContractNames.includes(u.name),
     )
 }
 
@@ -62,14 +62,14 @@ const recursiveSquash = (
     inheritedContractNames: string[],
     baseClass: UmlClass,
     umlClasses: readonly UmlClass[],
-    startPosition: number
+    startPosition: number,
 ): { currentPosition: number; removedClassIds: number[] } => {
     let currentPosition = startPosition
     const removedClassIds: number[] = []
 
     // For each association from the baseClass
     for (const [targetClassName, association] of Object.entries(
-        baseClass.associations
+        baseClass.associations,
     )) {
         // if inheritance and (Abstract or Contract)
         // Libraries and Interfaces will be copied
@@ -80,7 +80,7 @@ const recursiveSquash = (
             })
             if (!inheritedContract) {
                 debug(
-                    `Warning: failed to find inherited contract with name ${targetClassName}`
+                    `Warning: failed to find inherited contract with name ${targetClassName}`,
                 )
                 continue
             }
@@ -91,7 +91,7 @@ const recursiveSquash = (
             } else {
                 // has the contract already been added to the inheritance tree?
                 const alreadyInherited = inheritedContractNames.includes(
-                    inheritedContract.name
+                    inheritedContract.name,
                 )
                 // Do not add inherited contract if it has already been added to the inheritance tree
                 if (!alreadyInherited) {
@@ -101,12 +101,12 @@ const recursiveSquash = (
                         inheritedContractNames,
                         inheritedContract,
                         umlClasses,
-                        currentPosition++
+                        currentPosition++,
                     )
                     // Add to list of removed class ids
                     removedClassIds.push(
                         ...squashResult.removedClassIds,
-                        inheritedContract.id
+                        inheritedContract.id,
                     )
                 }
             }
@@ -118,10 +118,10 @@ const recursiveSquash = (
 
     // Copy class properties from the baseClass to the squashedClass
     baseClass.constants.forEach((c) =>
-        squashedClass.constants.push({ ...c, sourceContract: baseClass.name })
+        squashedClass.constants.push({ ...c, sourceContract: baseClass.name }),
     )
     baseClass.attributes.forEach((a) =>
-        squashedClass.attributes.push({ ...a, sourceContract: baseClass.name })
+        squashedClass.attributes.push({ ...a, sourceContract: baseClass.name }),
     )
     baseClass.enums.forEach((e) => squashedClass.enums.push(e))
     baseClass.structs.forEach((s) => squashedClass.structs.push(s))
@@ -135,7 +135,7 @@ const recursiveSquash = (
             hash: hash(f),
             inheritancePosition: currentPosition,
             sourceContract: baseClass.name,
-        })
+        }),
     )
 
     return {

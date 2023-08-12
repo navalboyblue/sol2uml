@@ -127,7 +127,7 @@ export class UmlClass implements ClassProperties {
     constructor(properties: ClassProperties) {
         if (!properties || !properties.name) {
             throw TypeError(
-                `Failed to instantiate UML Class with no name property`
+                `Failed to instantiate UML Class with no name property`,
             )
         }
 
@@ -140,7 +140,7 @@ export class UmlClass implements ClassProperties {
     addAssociation(association: Association) {
         if (!association || !association.targetUmlClassName) {
             throw TypeError(
-                `Failed to add association. targetUmlClassName was missing`
+                `Failed to add association. targetUmlClassName was missing`,
             )
         }
 
@@ -168,7 +168,7 @@ export class UmlClass implements ClassProperties {
      */
     getParentContracts(): Association[] {
         return Object.values(this.associations).filter(
-            (association) => association.realization
+            (association) => association.realization,
         )
     }
 }

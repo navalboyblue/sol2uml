@@ -12,12 +12,12 @@ const debug = require('debug')('sol2uml')
 export const parseUmlClassesFromFiles = async (
     filesOrFolders: readonly string[],
     ignoreFilesOrFolders: readonly string[],
-    subfolders: number = -1
+    subfolders: number = -1,
 ): Promise<UmlClass[]> => {
     const files = await getSolidityFilesFromFolderOrFiles(
         filesOrFolders,
         ignoreFilesOrFolders,
-        subfolders
+        subfolders,
     )
 
     let umlClasses: UmlClass[] = []
@@ -37,7 +37,7 @@ export const parseUmlClassesFromFiles = async (
 export async function getSolidityFilesFromFolderOrFiles(
     folderOrFilePaths: readonly string[],
     ignoreFilesOrFolders: readonly string[],
-    subfolders: number = -1
+    subfolders: number = -1,
 ): Promise<string[]> {
     let files: string[] = []
 
@@ -45,7 +45,7 @@ export async function getSolidityFilesFromFolderOrFiles(
         const result = await getSolidityFilesFromFolderOrFile(
             folderOrFilePath,
             ignoreFilesOrFolders,
-            subfolders
+            subfolders,
         )
         files = files.concat(result)
     }
@@ -56,7 +56,7 @@ export async function getSolidityFilesFromFolderOrFiles(
 export function getSolidityFilesFromFolderOrFile(
     folderOrFilePath: string,
     ignoreFilesOrFolders: readonly string[] = [],
-    depthLimit: number = -1
+    depthLimit: number = -1,
 ): Promise<string[]> {
     debug(`About to get Solidity files under ${folderOrFilePath}`)
 
@@ -98,27 +98,27 @@ export function getSolidityFilesFromFolderOrFile(
                 } else {
                     reject(
                         Error(
-                            `File ${folderOrFilePath} does not have a .sol extension.`
-                        )
+                            `File ${folderOrFilePath} does not have a .sol extension.`,
+                        ),
                     )
                 }
             } else {
                 reject(
                     Error(
-                        `Could not find directory or file ${folderOrFilePath}`
-                    )
+                        `Could not find directory or file ${folderOrFilePath}`,
+                    ),
                 )
             }
         } catch (err) {
             let error: Error
             if (err?.code === 'ENOENT') {
                 error = Error(
-                    `No such file or folder ${folderOrFilePath}. Make sure you pass in the root directory of the contracts`
+                    `No such file or folder ${folderOrFilePath}. Make sure you pass in the root directory of the contracts`,
                 )
             } else {
                 error = new Error(
                     `Failed to get Solidity files under folder or file ${folderOrFilePath}`,
-                    { cause: err }
+                    { cause: err },
                 )
             }
 
