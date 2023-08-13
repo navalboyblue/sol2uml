@@ -1,3 +1,7 @@
+export const ethereumAddress = /^0x([A-Fa-f0-9]{40})$/
+// comma-separated list of addresses with no whitespace
+export const ethereumAddresses = /^(0x[A-Fa-f0-9]{40},?)+$/
+
 export const isAddress = (input: string): boolean => {
     return input.match(/^0x([A-Fa-f0-9]{40})$/) !== null
 }

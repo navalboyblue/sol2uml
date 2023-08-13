@@ -42,7 +42,7 @@ export declare class EtherscanParser {
      * @oaram filename optional, case-sensitive name of the source file without the .sol
      */
     getSourceCode(contractAddress: string, filename?: string): Promise<{
-        files: readonly {
+        files: {
             code: string;
             filename: string;
         }[];

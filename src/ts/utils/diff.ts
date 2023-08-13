@@ -25,7 +25,7 @@ export const diffCode = (codeA: string, codeB: string, lineBuff: number) => {
 }
 
 /**
- * Convert a diff array into human readable for the console
+ * Convert a diff array into human-readable for the console
  * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
  * @param lines number of a lines in the second contract B
  * @param lineBuff number of a lines to output before and after the change

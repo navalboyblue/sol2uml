@@ -227,7 +227,7 @@ export class EtherscanParser {
         contractAddress: string,
         filename?: string,
     ): Promise<{
-        files: readonly { code: string; filename: string }[]
+        files: { code: string; filename: string }[]
         contractName: string
         compilerVersion: string
         remappings: Remapping[]

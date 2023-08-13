@@ -1,4 +1,4 @@
-import { diffCode } from '../diff'
+import { diffCode } from '../utils/diff'
 
 describe('Diff', () => {
     describe('2 line buffer', () => {

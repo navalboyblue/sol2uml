@@ -1,25 +1,33 @@
 #! /usr/bin/env node
 
-import { convertUmlClasses2Dot } from './converterClasses2Dot'
-import { parserUmlClasses } from './parserGeneral'
-import { EtherscanParser, networks } from './parserEtherscan'
-import {
-    classesConnectedToBaseContracts,
-    filterHiddenClasses,
-} from './filterClasses'
 import { Command, Option } from 'commander'
+import { ethers } from 'ethers'
+import { basename } from 'path'
+
+import { convertUmlClasses2Dot } from './converterClasses2Dot'
 import {
     addDynamicVariables,
     convertClasses2StorageSections,
 } from './converterClasses2Storage'
 import { convertStorages2Dot } from './converterStorage2Dot'
-import { isAddress } from './utils/regEx'
-import { writeOutputFiles, writeSolidity } from './writerFiles'
-import { basename } from 'path'
+import {
+    compareContracts,
+    displayContractNames,
+    displayFileDiffs,
+    displayFileDiffSummary,
+    flattenAndDiff,
+} from './diffContracts'
+import {
+    classesConnectedToBaseContracts,
+    filterHiddenClasses,
+} from './filterClasses'
+import { EtherscanParser, networks } from './parserEtherscan'
+import { parserUmlClasses } from './parserGeneral'
 import { squashUmlClasses } from './squashClasses'
-import { diffCode } from './diff'
 import { addSlotValues } from './slotValues'
-import { ethers } from 'ethers'
+import { isAddress } from './utils/regEx'
+import { validateAddress, validateLineBuffer } from './utils/validators'
+import { writeOutputFiles, writeSolidity } from './writerFiles'
 
 const clc = require('cli-color')
 const program = new Command()
@@ -61,7 +69,7 @@ Can also flatten or compare verified source files on Etherscan-like explorers.`,
     .addOption(
         new Option(
             '-e, --explorerUrl <url>',
-            'Override network with custom blockchain explorer API URL. eg Polygon Mumbai testnet https://api-testnet.polygonscan.com/api',
+            'Override the `network` option with a custom blockchain explorer API URL. eg Polygon Mumbai testnet https://api-testnet.polygonscan.com/api',
         ).env('EXPLORER_URL'),
     )
     .addOption(
@@ -262,6 +270,7 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
     .option(
         '-s, --storage <address>',
         'The address of the contract with the storage values. This will be different from the contract with the code if a proxy contract is used. This is not needed if `fileFolderAddress` is an address and the contract is not proxied.',
+        validateAddress,
     )
     .addOption(
         new Option(
@@ -397,6 +406,7 @@ In order for the merged code to compile, the following is done:
     .argument(
         '<contractAddress>',
         'Contract address in hexadecimal format with a 0x prefix.',
+        validateAddress,
     )
     .action(async (contractAddress, options, command) => {
         try {
@@ -443,33 +453,50 @@ The line numbers are from contract B. There are no line numbers for the red sect
     )
     .argument(
         '<addressA>',
-        'Contract address in hexadecimal format with a 0x prefix of the first contract.',
+        'Contract address in hexadecimal format with a 0x prefix of the first contract',
+        validateAddress,
     )
     .argument(
         '<addressB>',
-        'Contract address in hexadecimal format with a 0x prefix of the second contract.',
-    )
-    .addOption(
-        new Option(
-            '-l, --lineBuffer <value>',
-            'Minimum number of lines before and after changes',
-        ).default('4'),
-    )
-    .addOption(
-        new Option(
-            '-af --aFile <value>',
-            'Contract A source code filename without the .sol extension. (default: compares all source files)',
-        ),
-    )
-    .addOption(
-        new Option(
-            '-bf --bFile <value>',
-            'Contract B source code filename without the .sol extension. (default: aFile if specified)',
-        ),
+        'Contract address in hexadecimal format with a 0x prefix of the second contract',
+        validateAddress,
     )
     .option(
-        '-s, --saveFiles',
-        'Save the flattened contract code to the filesystem. The file names will be the contract address with a .sol extension.',
+        '-l, --lineBuffer <value>',
+        'Minimum number of lines before and after changes (default: 4)',
+        validateLineBuffer,
+    )
+    .option(
+        '-af --aFile <value>',
+        'Contract A source code filename without the .sol extension (default: compares all source files)',
+    )
+    .option(
+        '-bf --bFile <value>',
+        'Contract B source code filename without the .sol extension (default: aFile if specified)',
+    )
+    .addOption(
+        new Option(
+            '-bn, --bNetwork <network>',
+            'Ethereum network which maps to a blockchain explorer for contract B if on a different blockchain to contract A. Contract A uses the `network` option (default: value of `network` option)',
+        ).choices(networks),
+    )
+    .option(
+        '-be, --bExplorerUrl <url>',
+        'Override the `bNetwork` option with custom blockchain explorer API URL for contract B if on a different blockchain to contract A. Contract A uses the `explorerUrl` (default: value of `explorerUrl` option)',
+    )
+    .option(
+        '-bk, --bApiKey <key>',
+        'Blockchain explorer API key for contract B if on a different blockchain to contract A. Contract A uses the `apiKey` option (default: value of `apiKey` option)',
+    )
+    .option(
+        '-s, --summary',
+        'Only show a summary of the file differences.',
+        false,
+    )
+    .option('--flatten', 'Flatten into a single file before comparing', false)
+    .option(
+        '--saveFiles',
+        'Save the flattened contract code to the filesystem when using the `flatten` option. The file names will be the contract address with a .sol extension',
         false,
     )
     .action(async (addressA, addressB, options, command) => {
@@ -481,44 +508,61 @@ The line numbers are from contract B. There are no line numbers for the red sect
                 ...options,
             }
 
-            // Diff solidity code
-            const lineBuffer = parseInt(options.lineBuffer)
-            if (isNaN(lineBuffer))
-                throw Error(
-                    `Invalid line buffer "${options.lineBuffer}". Must be a number`,
-                )
-
-            const etherscanParser = new EtherscanParser(
+            const aEtherscanParser = new EtherscanParser(
                 combinedOptions.apiKey,
                 combinedOptions.network,
                 combinedOptions.explorerUrl,
             )
+            const bEtherscanParser = new EtherscanParser(
+                combinedOptions.bApiKey || combinedOptions.apiKey,
+                combinedOptions.bNetwork || combinedOptions.network,
+                combinedOptions.bExplorerUrl || combinedOptions.explorerUrl,
+            )
 
-            // Get verified Solidity code from Etherscan and flatten
-            const { solidityCode: codeA, contractName: contractNameA } =
-                await etherscanParser.getSolidityCode(
+            if (options.flatten || options.aFile) {
+                await flattenAndDiff(
                     addressA,
-                    combinedOptions.aFile,
-                )
-            const { solidityCode: codeB, contractName: contractNameB } =
-                await etherscanParser.getSolidityCode(
                     addressB,
-                    combinedOptions.bFile || combinedOptions.aFile,
+                    aEtherscanParser,
+                    bEtherscanParser,
+                    combinedOptions,
                 )
+            } else {
+                const { contractNameA, contractNameB, files } =
+                    await compareContracts(
+                        addressA,
+                        addressB,
+                        aEtherscanParser,
+                        bEtherscanParser,
+                        combinedOptions,
+                    )
 
-            console.log(`Difference between`)
-            console.log(
-                `A. ${addressA} ${contractNameA} on ${combinedOptions.network}`,
-            )
-            console.log(
-                `B. ${addressB} ${contractNameB} on ${combinedOptions.network}\n`,
-            )
+                displayContractNames(
+                    addressA,
+                    addressB,
+                    contractNameA,
+                    contractNameB,
+                    combinedOptions,
+                )
+                displayFileDiffSummary(files)
 
-            diffCode(codeA, codeB, lineBuffer)
+                if (!options.summary) {
+                    // Just show the summary if all the files are the same
+                    const diffFiles = files.filter((f) => f.result !== 'match')
+                    if (diffFiles.length === 0) return
 
-            if (options.saveFiles) {
-                await writeSolidity(codeA, addressA)
-                await writeSolidity(codeB, addressB)
+                    console.log()
+                    displayFileDiffs(files, combinedOptions)
+
+                    displayContractNames(
+                        addressA,
+                        addressB,
+                        contractNameA,
+                        contractNameB,
+                        combinedOptions,
+                    )
+                    displayFileDiffSummary(files)
+                }
             }
         } catch (err) {
             console.error(err)
