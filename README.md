@@ -196,8 +196,8 @@ Options:
   -l, --lineBuffer <value>   Minimum number of lines before and after changes (default: 4)
   -af --aFile <value>        Contract A source code filename without the .sol extension (default: compares all source files)
   -bf --bFile <value>        Contract B source code filename without the .sol extension (default: aFile if specified)
-  -bn, --bNetwork <network>  Ethereum network which maps to a blockchain explorer for contract B if on a different blockchain to contract A. Contract A uses the `network` option (default: value of `network` option) (choices: "mainnet", "goerli", "sepolia", "polygon",
-                             "arbitrum", "avalanche", "bsc", "crono", "fantom", "moonbeam", "optimism", "gnosis", "celo")
+  -bn, --bNetwork <network>  Ethereum network which maps to a blockchain explorer for contract B if on a different blockchain to contract A. Contract A uses the `network` option (default: value of `network` option) (choices: "mainnet",
+                             "goerli", "sepolia", "polygon", "arbitrum", "avalanche", "bsc", "crono", "fantom", "moonbeam", "optimism", "gnosis", "celo")
   -be, --bExplorerUrl <url>  Override the `bNetwork` option with custom blockchain explorer API URL for contract B if on a different blockchain to contract A. Contract A uses the `explorerUrl` (default: value of `explorerUrl` option)
   -bk, --bApiKey <key>       Blockchain explorer API key for contract B if on a different blockchain to contract A. Contract A uses the `apiKey` option (default: value of `apiKey` option)
   -s, --summary              Only show a summary of the file differences. (default: false)

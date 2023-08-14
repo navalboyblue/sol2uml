@@ -772,7 +772,7 @@ export const calcStorageByteSize = (
                     dynamic: false,
                 }
             default:
-                return { size: 32, dynamic: false }
+                return { size: 20, dynamic: false }
         }
     }
 

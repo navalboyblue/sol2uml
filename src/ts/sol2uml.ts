@@ -490,7 +490,7 @@ The line numbers are from contract B. There are no line numbers for the red sect
     )
     .option(
         '-s, --summary',
-        'Only show a summary of the file differences.',
+        'Only show a summary of the file differences',
         false,
     )
     .option('--flatten', 'Flatten into a single file before comparing', false)
