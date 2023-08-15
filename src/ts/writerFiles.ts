@@ -88,15 +88,16 @@ export function writeSolidity(code: string, filename = 'solidity') {
 }
 
 export function writeDot(dot: string, filename: string) {
-    debug(`About to write Dot file to ${filename}`)
+    const dotFilename = changeFileExtension(filename, 'dot')
+    debug(`About to write Dot file to ${dotFilename}`)
 
-    writeFile(filename, dot, (err) => {
+    writeFile(dotFilename, dot, (err) => {
         if (err) {
-            throw new Error(`Failed to write Dot file to ${filename}`, {
+            throw new Error(`Failed to write Dot file to ${dotFilename}`, {
                 cause: err,
             })
         } else {
-            console.log(`Dot file written to ${filename}`)
+            console.log(`Dot file written to ${dotFilename}`)
         }
     })
 }
@@ -113,7 +114,7 @@ export function writeSVG(
     svgFilename = 'classDiagram.svg',
     outputFormats: OutputFormats = 'png',
 ): Promise<void> {
-    debug(`About to write SVN file to ${svgFilename}`)
+    debug(`About to write SVG file to ${svgFilename}`)
 
     if (outputFormats === 'png') {
         const parsedFile = path.parse(svgFilename)
@@ -147,11 +148,7 @@ export function writeSVG(
  * @throws Error - If there is an error converting or writing the PNG file.
  */
 export async function writePng(svg: any, filename: string): Promise<void> {
-    // get svg file name from png file name
-    const parsedPngFile = path.parse(filename)
-    const pngDir =
-        parsedPngFile.dir === '' ? '.' : path.resolve(parsedPngFile.dir)
-    const pngFilename = pngDir + '/' + parsedPngFile.name + '.png'
+    const pngFilename = changeFileExtension(filename, 'png')
 
     debug(`About to write png file ${pngFilename}`)
 
@@ -182,4 +179,11 @@ export async function writePng(svg: any, filename: string): Promise<void> {
             cause: err,
         })
     }
+}
+
+// put a new file extension on a filename
+const changeFileExtension = (filename: string, extension: string): string => {
+    const parsedFile = path.parse(filename)
+    const dir = parsedFile.dir === '' ? '.' : path.resolve(parsedFile.dir)
+    return dir + '/' + parsedFile.name + '.' + extension
 }

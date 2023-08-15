@@ -82,7 +82,7 @@ sol2uml storage 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c -hx ______gap,_deprec
 sol2uml storage 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c -hx ______gap,_deprecated_swapTokens,swapConfig
 
 ## Maker DSR Strategy
-## Implementation with gaps and all dynamic variables expanded
+## Implementation with all variables expanded
 sol2uml storage 0x8a3b6D3739461137d20825c36ED6016803d3104F
 ## Implementation with no expended _reserved fixed array
 sol2uml storage 0x8a3b6D3739461137d20825c36ED6016803d3104F --hideExpand _reserved
@@ -97,3 +97,6 @@ sol2uml storage 0x8a3b6D3739461137d20825c36ED6016803d3104F \
 ## Proxy with data and expand all dynamic variables
 sol2uml storage 0x8a3b6D3739461137d20825c36ED6016803d3104F \
   --data --storage 0x6b69B755C629590eD59618A2712d8a2957CA98FC
+
+## Example from issue https://github.com/naddison36/sol2uml/issues/161
+sol2uml storage 0xa90dAF1975BA13c26F63976e0Fd73A21F966EE0D --hideExpand __gap --network polygon -v
