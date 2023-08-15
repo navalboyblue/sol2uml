@@ -1,5 +1,5 @@
-import { ethereumAddress, ethereumAddresses } from './regEx'
-import { InvalidArgumentError } from 'commander'
+import { commaSeparatedList, ethereumAddress } from './regEx'
+import { InvalidArgumentError, InvalidOptionArgumentError } from 'commander'
 import { getAddress } from 'ethers/lib/utils'
 
 export const validateAddress = (address: string): string => {
@@ -13,29 +13,26 @@ export const validateAddress = (address: string): string => {
     )
 }
 
-export const validateAddresses = (addresses: string): string[] => {
+export const validateVariables = (variables: string): string[] => {
     try {
-        const addressArray = convertAddresses(addresses)
-        if (addressArray) return addressArray
+        if (
+            typeof variables === 'string' &&
+            variables.match(commaSeparatedList)
+        )
+            return variables.split(',')
     } catch (err) {}
 
     throw new InvalidArgumentError(
-        `Must be an address or an array of addresses in hexadecimal format with a 0x prefix.
-If running for multiple addresses, the comma-separated list of addresses must not have white spaces.`,
+        `Must be a comma-separate list of storage variable names with no white spaces.`,
     )
 }
 
-const convertAddresses = (addresses: string): string[] => {
-    if (typeof addresses === 'string' && addresses?.match(ethereumAddress))
-        return [getAddress(addresses).toLowerCase()]
-    if (typeof addresses === 'string' && addresses?.match(ethereumAddresses))
-        return addresses.split(',').map((a) => getAddress(a).toLowerCase())
-    return undefined
-}
-
 export const validateLineBuffer = (lineBufferParam: string): number => {
-    const lineBuffer = parseInt(lineBufferParam)
-    if (isNaN(lineBuffer))
-        throw Error(`Invalid line buffer "${lineBuffer}". Must be a number`)
-    return lineBuffer
+    try {
+        const lineBuffer = parseInt(lineBufferParam, 10)
+        if (lineBuffer >= 0) return lineBuffer
+    } catch (err) {}
+    throw new InvalidOptionArgumentError(
+        `Must be a zero or a positive integer.`,
+    )
 }

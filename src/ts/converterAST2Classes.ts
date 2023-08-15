@@ -751,7 +751,7 @@ function parseParameters(params: readonly VariableDeclaration[]): Parameter[] {
 function parseContractKind(kind: string): ClassStereotype {
     switch (kind) {
         case 'contract':
-            return ClassStereotype.None
+            return ClassStereotype.Contract
         case 'interface':
             return ClassStereotype.Interface
         case 'library':

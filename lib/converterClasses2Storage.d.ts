@@ -44,7 +44,7 @@ export interface StorageSection {
  * @param contractFilename relative path of the contract in the file system
  * @return storageSections array of storageSection objects
  */
-export declare const convertClasses2StorageSections: (contractName: string, umlClasses: UmlClass[], arrayItems: number, contractFilename?: string) => StorageSection[];
+export declare const convertClasses2StorageSections: (contractName: string, umlClasses: UmlClass[], arrayItems: number, contractFilename?: string, noExpandVariables?: string[]) => StorageSection[];
 /**
  * Recursively adds new storage sections under a class attribute.
  * also returns the allowed enum values
@@ -57,7 +57,7 @@ export declare const convertClasses2StorageSections: (contractName: string, umlC
  * @return storageSection new storage section that was added or undefined if none was added.
  * @return enumValues array of allowed enum values. undefined if attribute is not an enum
  */
-export declare const parseStorageSectionFromAttribute: (attribute: Attribute, umlClass: UmlClass, otherClasses: readonly UmlClass[], storageSections: StorageSection[], mapping: boolean, arrayItems: number) => {
+export declare const parseStorageSectionFromAttribute: (attribute: Attribute, umlClass: UmlClass, otherClasses: readonly UmlClass[], storageSections: StorageSection[], mapping: boolean, arrayItems: number, noExpandVariables: string[]) => {
     storageSection: StorageSection;
     enumValues?: string[];
 };

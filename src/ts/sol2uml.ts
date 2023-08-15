@@ -26,7 +26,11 @@ import { parserUmlClasses } from './parserGeneral'
 import { squashUmlClasses } from './squashClasses'
 import { addSlotValues } from './slotValues'
 import { isAddress } from './utils/regEx'
-import { validateAddress, validateLineBuffer } from './utils/validators'
+import {
+    validateAddress,
+    validateLineBuffer,
+    validateVariables,
+} from './utils/validators'
 import { writeOutputFiles, writeSolidity } from './writerFiles'
 
 const clc = require('cli-color')
@@ -55,7 +59,7 @@ Can also flatten or compare verified source files on Etherscan-like explorers.`,
     .option('-o, --outputFileName <value>', 'output file name')
     .option(
         '-i, --ignoreFilesOrFolders <filesOrFolders>',
-        'comma separated list of files or folders to ignore',
+        'comma-separated list of files or folders to ignore',
     )
     .addOption(
         new Option(
@@ -115,7 +119,7 @@ program
     .argument('fileFolderAddress', argumentText)
     .option(
         '-b, --baseContractNames <value>',
-        'only output contracts connected to these comma separated base contract names',
+        'only output contracts connected to these comma-separated base contract names',
     )
     .addOption(
         new Option(
@@ -290,6 +294,11 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
         'Number of slots to display at the start and end of arrays.',
         '2',
     )
+    .option(
+        '-hx, --hideExpand <variables>',
+        "Comma-separated list of storage variables to not expand. That's arrays, structs, strings or bytes.",
+        validateVariables,
+    )
     .option('-hv, --hideValue', 'Hide storage slot value column.', false)
     .action(async (fileFolderAddress, options, command) => {
         try {
@@ -317,6 +326,7 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
                 umlClasses,
                 arrayItems,
                 combinedOptions.contractFile,
+                options.hideExpand,
             )
 
             if (isAddress(fileFolderAddress)) {

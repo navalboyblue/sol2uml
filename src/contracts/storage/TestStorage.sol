@@ -112,6 +112,10 @@ contract Parent2 is GrandParent {
     bytes data;
 }
 
+contract Related {
+    string relatedName = "Related Contract";
+}
+
 contract TestStorage is Parent, Parent2 {
     struct TwoSlots {
         bytes32 hash1;
@@ -141,6 +145,7 @@ contract TestStorage is Parent, Parent2 {
 
     address owner = 0x2f2Db75C5276481E2B018Ac03e968af7763Ed118;
     IERC20 token = IERC20(0x34f08F2A3f4a86531e9C4139Fde571a62689AFEC);
+    Related related = new Related();
     address[] tokensDyn = [
         0xfF000000000000000000000000000000000000A1,
         0xff000000000000000000000000000000000000b2,

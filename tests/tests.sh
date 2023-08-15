@@ -67,5 +67,33 @@ sol2uml diff 0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45 0x5615CDAb10dc425a742d64
 sol2uml diff 0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45 0xB971eF87ede563556b2ED4b1C0b0019111Dd85d2 --bNetwork bsc
 
 # Storage
+## TestStorage
+sol2uml storage ../src/contracts -c TestStorage -v -o ../examples/storage
+
 ## FRAXStablecoin where Contract is followed by a boolean.
 sol2uml storage -d 0x853d955aCEf822Db058eb8505911ED77F175b99e
+
+## Origin Governance with data
+sol2uml storage -d 0x3cdD07c16614059e66344a7b579DAB4f9516C0b6
+
+## Origin OETH VaultCore
+sol2uml storage 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c
+sol2uml storage 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c -hx ______gap,_deprecated_swapTokens
+sol2uml storage 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c -hx ______gap,_deprecated_swapTokens,swapConfig
+
+## Maker DSR Strategy
+## Implementation with gaps and all dynamic variables expanded
+sol2uml storage 0x8a3b6D3739461137d20825c36ED6016803d3104F
+## Implementation with no expended _reserved fixed array
+sol2uml storage 0x8a3b6D3739461137d20825c36ED6016803d3104F --hideExpand _reserved
+## Implementation with no expended _reserved, ______gap or __gap fixed arrays
+sol2uml storage 0x8a3b6D3739461137d20825c36ED6016803d3104F --hideExpand _reserved,______gap,__gap
+## Implementation with no expended _reserved, ______gap or __gap fixed arrays or dynamic array assetsMapped
+sol2uml storage 0x8a3b6D3739461137d20825c36ED6016803d3104F --hideExpand _reserved,______gap,__gap,assetsMapped
+## Proxy with data, no expended _reserved, ______gap or __gap variables
+sol2uml storage 0x8a3b6D3739461137d20825c36ED6016803d3104F \
+  -hx _reserved,______gap,__gap \
+  --data --storage 0x6b69B755C629590eD59618A2712d8a2957CA98FC
+## Proxy with data and expand all dynamic variables
+sol2uml storage 0x8a3b6D3739461137d20825c36ED6016803d3104F \
+  --data --storage 0x6b69B755C629590eD59618A2712d8a2957CA98FC

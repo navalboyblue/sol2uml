@@ -69,6 +69,7 @@ export const convertClasses2StorageSections = (
     umlClasses: UmlClass[],
     arrayItems: number,
     contractFilename?: string,
+    noExpandVariables: string[] = [],
 ): StorageSection[] => {
     // Find the base UML Class from the base contract name
     const umlClass = umlClasses.find(({ name, relativePath }) => {
@@ -101,6 +102,7 @@ export const convertClasses2StorageSections = (
         [],
         false,
         arrayItems,
+        noExpandVariables,
     )
 
     // Add new storage section to the beginning of the array
@@ -136,6 +138,7 @@ const parseVariables = (
     inheritedContracts: string[],
     mapping: boolean,
     arrayItems: number,
+    noExpandVariables: string[],
 ): Variable[] => {
     // Add storage slots from inherited contracts first.
     // Get immediate parent contracts that the class inherits from
@@ -166,6 +169,7 @@ const parseVariables = (
             inheritedContracts,
             mapping,
             arrayItems,
+            noExpandVariables,
         )
     })
 
@@ -181,14 +185,17 @@ const parseVariables = (
         )
 
         // parse any dependent storage sections or enums
-        const references = parseStorageSectionFromAttribute(
-            attribute,
-            umlClass,
-            umlClasses,
-            storageSections,
-            mapping || attribute.attributeType === AttributeType.Mapping,
-            arrayItems,
-        )
+        const references = noExpandVariables.includes(attribute.name)
+            ? undefined
+            : parseStorageSectionFromAttribute(
+                  attribute,
+                  umlClass,
+                  umlClasses,
+                  storageSections,
+                  mapping || attribute.attributeType === AttributeType.Mapping,
+                  arrayItems,
+                  noExpandVariables,
+              )
 
         // should this new variable get the slot value
         const displayValue = calcDisplayValue(
@@ -303,6 +310,7 @@ export const parseStorageSectionFromAttribute = (
     storageSections: StorageSection[],
     mapping: boolean,
     arrayItems: number,
+    noExpandVariables: string[],
 ): {
     storageSection: StorageSection
     enumValues?: string[]
@@ -356,6 +364,7 @@ export const parseStorageSectionFromAttribute = (
                 storageSections,
                 mapping,
                 arrayItems,
+                noExpandVariables,
             )
         }
 
@@ -404,6 +413,7 @@ export const parseStorageSectionFromAttribute = (
                         storageSections,
                         mapping,
                         arrayItems,
+                        noExpandVariables,
                     )
                     variable.referenceSectionId = references?.storageSection?.id
                     variable.enumValues = references?.enumValues
@@ -442,6 +452,7 @@ export const parseStorageSectionFromAttribute = (
                 [],
                 mapping,
                 arrayItems,
+                noExpandVariables,
             )
             const storageSection = {
                 id: storageId++,
@@ -485,6 +496,7 @@ export const parseStorageSectionFromAttribute = (
                     [],
                     true,
                     arrayItems,
+                    noExpandVariables,
                 )
                 const storageSection = {
                     id: storageId++,
