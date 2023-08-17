@@ -88,7 +88,7 @@ export function getSolidityFilesFromFolderOrFile(
                             files.push(file.path)
                     })
                     .on('end', () => {
-                        debug(`Got Solidity files to be parsed: ${files}`)
+                        // debug(`Got Solidity files to be parsed: ${files}`)
                         resolve(files)
                     })
             } else if (folderOrFile.isFile()) {

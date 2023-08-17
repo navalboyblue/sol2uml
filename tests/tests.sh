@@ -16,12 +16,16 @@ sol2uml diff 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 0xEA24e9Bac006DE9635Ac7f
 sol2uml diff 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c --aFile VaultCore
 sol2uml diff 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c --aFile OETHVaultCore --bFile VaultCore -v
 sol2uml diff 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c --aFile VaultStorage
+sol2uml diff 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c .,node_modules
 
 ### OETH Frax Strategy
 ### Has added and changed contracts
 sol2uml diff 0x167747bf5b3b6bf2f7f7c4cce32c463e9598d425 0x5061cde874f75d119de3b07e191644097343ab9e -v
 sol2uml diff 0x167747bf5b3b6bf2f7f7c4cce32c463e9598d425 0x5061cde874f75d119de3b07e191644097343ab9e --summary
 sol2uml diff 0x167747bf5b3b6bf2f7f7c4cce32c463e9598d425 0x5061cde874f75d119de3b07e191644097343ab9e --aFile Generalized4626Strategy
+
+# Compare new implementation to local files
+sol2uml diff 0x57d49c28cf9a0f65b1279a97ed01c3e49a5a173f .,node_modules
 
 ### OUSD Token
 ## Old contract was flattened, new contract has multiple files
@@ -30,6 +34,8 @@ sol2uml diff 0xB248c975DaeAc47c4960EcBD10a79E486eBD1cA8 0x33db8d52d65F75E4cdDA1b
 
 ### OUSD VaultCore upgrade
 sol2uml diff 0x48Cf14DeA2f5dD31c57218877195913412D3278A 0x997c35A0bf8E21404aE4379841E0603C957138c3 -v
+sol2uml diff 0x48Cf14DeA2f5dD31c57218877195913412D3278A 0x997c35A0bf8E21404aE4379841E0603C957138c3 --flatten
+sol2uml diff 0x997c35A0bf8E21404aE4379841E0603C957138c3 .,node_modules
 
 ### Harvesters
 sol2uml diff 0x5E72EB0ab74B5B4d2766a7956D210746Ceab96E1 0x1d6e0d7a1244276acf22a4e1dfc3c58186b1f624 -v

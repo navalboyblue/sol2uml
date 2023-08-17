@@ -11,11 +11,9 @@ import {
 } from './converterClasses2Storage'
 import { convertStorages2Dot } from './converterStorage2Dot'
 import {
-    compareContracts,
-    displayContractNames,
-    displayFileDiffs,
-    displayFileDiffSummary,
-    flattenAndDiff,
+    compareVerified2Local,
+    compareFlattenContracts,
+    compareVerifiedContracts,
 } from './diffContracts'
 import {
     classesConnectedToBaseContracts,
@@ -108,8 +106,8 @@ program.version(version)
 
 const argumentText = `file name, folder(s) or contract address.
 \t\t\t\t  When a folder is used, all *.sol files in that folder and all sub folders are used.
-\t\t\t\t  A comma-separated list of files and folders can also be used. For example
-\t\t\t\t\tsol2uml contracts,node_modules/openzeppelin-solidity
+\t\t\t\t  A comma-separated list of files and folders can also be used. For example,
+\t\t\t\t\tsol2uml contracts,node_modules/@openzeppelin
 \t\t\t\t  If an Ethereum address with a 0x prefix is passed, the verified source code from Etherscan will be used. For example
 \t\t\t\t\tsol2uml 0x79fEbF6B9F76853EDBcBc913e6aAE8232cFB9De9`
 program
@@ -448,9 +446,9 @@ In order for the merged code to compile, the following is done:
 
 program
     .command('diff')
-    .usage('[options] <addressA> <addressB>')
+    .usage('[options] <addressA> <addressB or comma-separated folders>')
     .description(
-        `Compare verified Solidity code differences between two contracts.
+        `Compare verified Solidity code to another verified contract or local source files.
 
 The results show the comparison of contract A to B.
 The ${clc.green(
@@ -467,14 +465,15 @@ The line numbers are from contract B. There are no line numbers for the red sect
         validateAddress,
     )
     .argument(
-        '<addressB>',
-        'Contract address in hexadecimal format with a 0x prefix of the second contract',
-        validateAddress,
+        '<addressB_folders>',
+        `Location of the contract source code to compare against. Can be a contract address or comma-separated list of local folders.
+For example, 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 will get the verified source code from Etherscan
+or ".,node_modules" will compare against local files in the current folder and the node_modules folder.`,
     )
     .option(
-        '-l, --lineBuffer <value>',
-        'Minimum number of lines before and after changes (default: 4)',
-        validateLineBuffer,
+        '-s, --summary',
+        'Only show a summary of the file differences',
+        false,
     )
     .option(
         '-af --aFile <value>',
@@ -499,19 +498,23 @@ The line numbers are from contract B. There are no line numbers for the red sect
         'Blockchain explorer API key for contract B if on a different blockchain to contract A. Contract A uses the `apiKey` option (default: value of `apiKey` option)',
     )
     .option(
-        '-s, --summary',
-        'Only show a summary of the file differences',
+        '--flatten',
+        'Flatten into a single file before comparing. Only works when comparing two verified contracts, not to local files',
         false,
     )
-    .option('--flatten', 'Flatten into a single file before comparing', false)
     .option(
         '--saveFiles',
         'Save the flattened contract code to the filesystem when using the `flatten` option. The file names will be the contract address with a .sol extension',
         false,
     )
-    .action(async (addressA, addressB, options, command) => {
+    .option(
+        '-l, --lineBuffer <value>',
+        'Minimum number of lines before and after changes (default: 4)',
+        validateLineBuffer,
+    )
+    .action(async (addressA, addressB_folders, options, command) => {
         try {
-            debug(`About to diff ${addressA} and ${addressB}`)
+            debug(`About to compare ${addressA} to ${addressB_folders}`)
 
             const combinedOptions = {
                 ...command.parent._optionValues,
@@ -523,56 +526,40 @@ The line numbers are from contract B. There are no line numbers for the red sect
                 combinedOptions.network,
                 combinedOptions.explorerUrl,
             )
-            const bEtherscanParser = new EtherscanParser(
-                combinedOptions.bApiKey || combinedOptions.apiKey,
-                combinedOptions.bNetwork || combinedOptions.network,
-                combinedOptions.bExplorerUrl || combinedOptions.explorerUrl,
-            )
 
-            if (options.flatten || options.aFile) {
-                await flattenAndDiff(
-                    addressA,
-                    addressB,
-                    aEtherscanParser,
-                    bEtherscanParser,
-                    combinedOptions,
+            if (isAddress(addressB_folders)) {
+                const addressB = addressB_folders
+                const bEtherscanParser = new EtherscanParser(
+                    combinedOptions.bApiKey || combinedOptions.apiKey,
+                    combinedOptions.bNetwork || combinedOptions.network,
+                    combinedOptions.bExplorerUrl || combinedOptions.explorerUrl,
                 )
-            } else {
-                const { contractNameA, contractNameB, files } =
-                    await compareContracts(
+                // If flattening or just comparing a single file
+                if (options.flatten || options.aFile) {
+                    await compareFlattenContracts(
                         addressA,
                         addressB,
                         aEtherscanParser,
                         bEtherscanParser,
                         combinedOptions,
                     )
-
-                displayContractNames(
-                    addressA,
-                    addressB,
-                    contractNameA,
-                    contractNameB,
-                    combinedOptions,
-                )
-                displayFileDiffSummary(files)
-
-                if (!options.summary) {
-                    // Just show the summary if all the files are the same
-                    const diffFiles = files.filter((f) => f.result !== 'match')
-                    if (diffFiles.length === 0) return
-
-                    console.log()
-                    displayFileDiffs(files, combinedOptions)
-
-                    displayContractNames(
+                } else {
+                    await compareVerifiedContracts(
                         addressA,
+                        aEtherscanParser,
                         addressB,
-                        contractNameA,
-                        contractNameB,
+                        bEtherscanParser,
                         combinedOptions,
                     )
-                    displayFileDiffSummary(files)
                 }
+            } else {
+                const localFolders: string[] = addressB_folders.split(',')
+                await compareVerified2Local(
+                    addressA,
+                    aEtherscanParser,
+                    localFolders,
+                    combinedOptions,
+                )
             }
         } catch (err) {
             console.error(err)

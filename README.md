@@ -68,25 +68,25 @@ Options:
   -h, --help                                   display help for command
 
 Commands:
-  class [options] <fileFolderAddress>          Generates a UML class diagram from Solidity source code.
-  storage [options] <fileFolderAddress>        Visually display a contract's storage slots.
+  class [options] <fileFolderAddress>           Generates a UML class diagram from Solidity source code.
+  storage [options] <fileFolderAddress>         Visually display a contract's storage slots.
   
-                                               WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A known example is fixed-sized arrays declared with an expression will fail to be sized.
-  flatten <contractAddress>                    Merges verified source files for a contract from a Blockchain explorer into one local file.
+                                                WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A known example is fixed-sized arrays declared with an expression will fail to be sized.
+  flatten <contractAddress>                     Merges verified source files for a contract from a Blockchain explorer into one local Solidity file.
   
-                                               In order for the merged code to compile, the following is done:
-                                               1. pragma solidity is set using the compiler of the verified contract.
-                                               2. All pragma solidity lines in the source files are commented out.
-                                               3. File imports are commented out.
-                                               4. "SPDX-License-Identifier" is renamed to "SPDX--License-Identifier".
-                                               5. Contract dependencies are analysed so the files are merged in an order that will compile.
-  diff [options] <addressA> <addressB>         Compare verified Solidity code differences between two contracts.
+                                                In order for the merged code to compile, the following is done:
+                                                1. pragma solidity is set using the compiler of the verified contract.
+                                                2. All pragma solidity lines in the source files are commented out.
+                                                3. File imports are commented out.
+                                                4. "SPDX-License-Identifier" is renamed to "SPDX--License-Identifier".
+                                                5. Contract dependencies are analysed so the files are merged in an order that will compile.
+  diff [options] <addressA> <addressB_folders>  Compare verified Solidity code to another verified contract or local source files.
   
-                                               The results show the comparison of contract A to B.
-                                               The green sections are additions to contract B that are not in contract A.
-                                               The red sections are removals from contract A that are not in contract B.
-                                               The line numbers are from contract B. There are no line numbers for the red sections as they are not in contract B.
-  help [command]                               display help for command
+                                                The results show the comparison of contract A to B.
+                                                The green sections are additions to contract B that are not in contract A.
+                                                The red sections are removals from contract A that are not in contract B.
+                                                The line numbers are from contract B. There are no line numbers for the red sections as they are not in contract B.
+  help [command]                                display help for command
 ```
 
 ### Class usage
@@ -99,8 +99,8 @@ Generates a UML class diagram from Solidity source code.
 Arguments:
   fileFolderAddress                file name, folder(s) or contract address.
                                   When a folder is used, all *.sol files in that folder and all sub folders are used.
-                                  A comma-separated list of files and folders can also be used. For example
-                                        sol2uml contracts,node_modules/openzeppelin-solidity
+                                  A comma-separated list of files and folders can also be used. For example,
+                                        sol2uml contracts,node_modules/@openzeppelin
                                   If an Ethereum address with a 0x prefix is passed, the verified source code from Etherscan will be used. For example
                                         sol2uml 0x79fEbF6B9F76853EDBcBc913e6aAE8232cFB9De9
 
@@ -180,9 +180,9 @@ Options:
 ### Diff usage
 
 ```
-Usage: sol2uml diff [options] <addressA> <addressB>
+Usage: sol2uml diff [options] <addressA> <addressB or comma-separated folders>
 
-Compare verified Solidity code differences between two contracts.
+Compare verified Solidity code to another verified contract or local source files.
 
 The results show the comparison of contract A to B.
 The green sections are additions to contract B that are not in contract A.
@@ -191,19 +191,21 @@ The line numbers are from contract B. There are no line numbers for the red sect
 
 Arguments:
   addressA                   Contract address in hexadecimal format with a 0x prefix of the first contract
-  addressB                   Contract address in hexadecimal format with a 0x prefix of the second contract
+  addressB_folders           Location of the contract source code to compare against. Can be a contract address or comma-separated list of local folders.
+                             For example, 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 will get the verified source code from Etherscan
+                             or ".,node_modules" will compare against local files in the current folder and the node_modules folder.
 
 Options:
-  -l, --lineBuffer <value>   Minimum number of lines before and after changes (default: 4)
+  -s, --summary              Only show a summary of the file differences (default: false)
   -af --aFile <value>        Contract A source code filename without the .sol extension (default: compares all source files)
   -bf --bFile <value>        Contract B source code filename without the .sol extension (default: aFile if specified)
-  -bn, --bNetwork <network>  Ethereum network which maps to a blockchain explorer for contract B if on a different blockchain to contract A. Contract A uses the `network` option (default: value of `network` option) (choices: "mainnet",
-                             "goerli", "sepolia", "polygon", "arbitrum", "avalanche", "bsc", "crono", "fantom", "moonbeam", "optimism", "gnosis", "celo")
+  -bn, --bNetwork <network>  Ethereum network which maps to a blockchain explorer for contract B if on a different blockchain to contract A. Contract A uses the `network` option (default: value of `network` option) (choices: "mainnet", "goerli", "sepolia", "polygon", "arbitrum", "avalanche",
+                             "bsc", "crono", "fantom", "moonbeam", "optimism", "gnosis", "celo")
   -be, --bExplorerUrl <url>  Override the `bNetwork` option with custom blockchain explorer API URL for contract B if on a different blockchain to contract A. Contract A uses the `explorerUrl` (default: value of `explorerUrl` option)
   -bk, --bApiKey <key>       Blockchain explorer API key for contract B if on a different blockchain to contract A. Contract A uses the `apiKey` option (default: value of `apiKey` option)
-  -s, --summary              Only show a summary of the file differences. (default: false)
-  --flatten                  Flatten into a single file before comparing (default: false)
+  --flatten                  Flatten into a single file before comparing. Only works when comparing two verified contracts, not to local files (default: false)
   --saveFiles                Save the flattened contract code to the filesystem when using the `flatten` option. The file names will be the contract address with a .sol extension (default: false)
+  -l, --lineBuffer <value>   Minimum number of lines before and after changes (default: 4)
   -h, --help                 display help for command
 ```
 
