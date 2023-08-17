@@ -31,6 +31,9 @@ sol2uml diff 0xB248c975DaeAc47c4960EcBD10a79E486eBD1cA8 0x33db8d52d65F75E4cdDA1b
 ### OUSD VaultCore upgrade
 sol2uml diff 0x48Cf14DeA2f5dD31c57218877195913412D3278A 0x997c35A0bf8E21404aE4379841E0603C957138c3 -v
 
+### Harvesters
+sol2uml diff 0x5E72EB0ab74B5B4d2766a7956D210746Ceab96E1 0x1d6e0d7a1244276acf22a4e1dfc3c58186b1f624 -v
+
 ## Curve
 ### stETH and frxETH Metapool
 ### Vyper contracts
@@ -76,10 +79,23 @@ sol2uml storage -d 0x853d955aCEf822Db058eb8505911ED77F175b99e
 ## Origin Governance with data
 sol2uml storage -d 0x3cdD07c16614059e66344a7b579DAB4f9516C0b6
 
+## Origin OUSD Vault old VaultCore impl
+sol2uml storage -d -s 0xe75d77b1865ae93c7eaa3040b038d7aa7bc02f70 0x997c35A0bf8E21404aE4379841E0603C957138c3 -hx ______gap
+## VaultCore
+sol2uml storage 0x997c35A0bf8E21404aE4379841E0603C957138c3 -hx ______gap -o VaultCoreOld.svg
+sol2uml storage . -c VaultCore -hx ______gap -o VaultCoreNew.svg
+## VaultAdmin
+sol2uml storage 0x1ef0553feb80e6f133cae3092e38f0b23da6452b -hx ______gap -o VaultAdminOld.svg
+sol2uml storage . -c VaultAdmin -hx ______gap -o VaultAdminNew.svg
+
 ## Origin OETH VaultCore
 sol2uml storage 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c
 sol2uml storage 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c -hx ______gap,_deprecated_swapTokens
 sol2uml storage 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c -hx ______gap,_deprecated_swapTokens,swapConfig
+
+## OUSD Harvestor
+sol2uml storage 0x5E72EB0ab74B5B4d2766a7956D210746Ceab96E1 -o HarvesterOld.svg
+sol2uml storage . -c Harvester -o HarvesterNew.svg
 
 ## Maker DSR Strategy
 ## Implementation with all variables expanded
