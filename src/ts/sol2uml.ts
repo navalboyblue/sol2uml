@@ -29,7 +29,7 @@ import {
     validateLineBuffer,
     validateVariables,
 } from './utils/validators'
-import { writeOutputFiles, writeSolidity } from './writerFiles'
+import { writeOutputFiles, writeSourceCode } from './writerFiles'
 
 const clc = require('cli-color')
 const program = new Command()
@@ -437,7 +437,7 @@ In order for the merged code to compile, the following is done:
             // Write Solidity to the contract address
             const outputFilename =
                 combinedOptions.outputFileName || contractName
-            await writeSolidity(solidityCode, outputFilename)
+            await writeSourceCode(solidityCode, outputFilename)
         } catch (err) {
             console.error(err)
             process.exit(2)
@@ -448,7 +448,7 @@ program
     .command('diff')
     .usage('[options] <addressA> <addressB or comma-separated folders>')
     .description(
-        `Compare verified Solidity code to another verified contract or local source files.
+        `Compare verified Solidity code to another verified contract, a local file or local source files.
 
 The results show the comparison of contract A to B.
 The ${clc.green(
@@ -465,10 +465,11 @@ The line numbers are from contract B. There are no line numbers for the red sect
         validateAddress,
     )
     .argument(
-        '<addressB_folders>',
-        `Location of the contract source code to compare against. Can be a contract address or comma-separated list of local folders.
-For example, 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 will get the verified source code from Etherscan
-or ".,node_modules" will compare against local files in the current folder and the node_modules folder.`,
+        '<fileFoldersAddress>',
+        `Location of the contract source code to compare against. Can be a filename, comma-separated list of local folders or a contract address. Examples:
+  "flat.sol" will compare against a local file called "flat.sol". This must be used when address A's verified source code is a single, flat file.
+  ".,node_modules" will compare against local files under the current working folder and the node_modules folder. This is used when address A's verified source code is multiple files.
+  0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 will compare against the verified source code from Etherscan.`,
     )
     .option(
         '-s, --summary',
@@ -512,9 +513,9 @@ or ".,node_modules" will compare against local files in the current folder and t
         'Minimum number of lines before and after changes (default: 4)',
         validateLineBuffer,
     )
-    .action(async (addressA, addressB_folders, options, command) => {
+    .action(async (addressA, fileFoldersAddress, options, command) => {
         try {
-            debug(`About to compare ${addressA} to ${addressB_folders}`)
+            debug(`About to compare ${addressA} to ${fileFoldersAddress}`)
 
             const combinedOptions = {
                 ...command.parent._optionValues,
@@ -527,8 +528,8 @@ or ".,node_modules" will compare against local files in the current folder and t
                 combinedOptions.explorerUrl,
             )
 
-            if (isAddress(addressB_folders)) {
-                const addressB = addressB_folders
+            if (isAddress(fileFoldersAddress)) {
+                const addressB = fileFoldersAddress
                 const bEtherscanParser = new EtherscanParser(
                     combinedOptions.bApiKey || combinedOptions.apiKey,
                     combinedOptions.bNetwork || combinedOptions.network,
@@ -553,7 +554,7 @@ or ".,node_modules" will compare against local files in the current folder and t
                     )
                 }
             } else {
-                const localFolders: string[] = addressB_folders.split(',')
+                const localFolders: string[] = fileFoldersAddress.split(',')
                 await compareVerified2Local(
                     addressA,
                     aEtherscanParser,

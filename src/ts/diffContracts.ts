@@ -1,10 +1,13 @@
 const clc = require('cli-color')
-import { readFileSync } from 'fs'
 import { resolve } from 'path'
 
 import { EtherscanParser } from './parserEtherscan'
-import { getSolidityFilesFromFolderOrFiles } from './parserFiles'
-import { writeSolidity } from './writerFiles'
+import {
+    getSolidityFilesFromFolderOrFiles,
+    isFolder,
+    readFile,
+} from './parserFiles'
+import { writeSourceCode } from './writerFiles'
 import { isAddress } from './utils/regEx'
 import { diffCode } from './utils/diff'
 
@@ -33,6 +36,7 @@ interface CompareContracts {
     files: DiffFiles[]
     contractNameA: string
     contractNameB?: string
+    local?: 'file' | 'folders'
 }
 
 export const compareVerifiedContracts = async (
@@ -69,14 +73,14 @@ export const compareVerifiedContracts = async (
 export const compareVerified2Local = async (
     addressA: string,
     aEtherscanParser: EtherscanParser,
-    localFolders: string[],
+    fileOrBaseFolders: string[],
     options: DiffOptions,
 ) => {
     // compare verified contract to local files
-    const { contractNameA, files } = await diffVerified2Local(
+    const { contractNameA, files, local } = await diffVerified2Local(
         addressA,
         aEtherscanParser,
-        localFolders,
+        fileOrBaseFolders,
     )
 
     if (!options.summary) {
@@ -86,7 +90,11 @@ export const compareVerified2Local = async (
     console.log(
         `Compared the "${contractNameA}" contract with address ${addressA} on ${options.network}`,
     )
-    console.log(`to local files under folders "${localFolders}"\n`)
+    if (local) {
+        console.log(`to local file "${fileOrBaseFolders}"\n`)
+    } else {
+        console.log(`to local files under folders "${fileOrBaseFolders}"\n`)
+    }
     displayFileDiffSummary(files)
 }
 
@@ -109,18 +117,31 @@ export const compareFlattenContracts = async (
     diffCode(codeA, codeB, options.lineBuffer)
 
     if (options.saveFiles) {
-        await writeSolidity(codeA, addressA)
-        await writeSolidity(codeB, addressB)
+        await writeSourceCode(codeA, addressA)
+        await writeSourceCode(codeB, addressB)
     }
 
-    console.log(
-        `Compared the flattened "${contractNameA}" contract with address ${addressA} on ${options.network}`,
-    )
-    console.log(
-        `to the flattened "${contractNameB}" contract with address ${addressB} on ${
-            options.bNetwork || options.network
-        }\n`,
-    )
+    if (options.bFile || options.aFile) {
+        console.log(
+            `Compared the "${options.aFile}" file for the "${contractNameA}" contract with address ${addressA} on ${options.network}`,
+        )
+        console.log(
+            `to the "${
+                options.bFile || options.aFile
+            }" file for the "${contractNameB}" contract with address ${addressB} on ${
+                options.bNetwork || options.network
+            }\n`,
+        )
+    } else {
+        console.log(
+            `Compared the flattened "${contractNameA}" contract with address ${addressA} on ${options.network}`,
+        )
+        console.log(
+            `to the flattened "${contractNameB}" contract with address ${addressB} on ${
+                options.bNetwork || options.network
+            }\n`,
+        )
+    }
 
     return { contractNameA, contractNameB }
 }
@@ -128,7 +149,7 @@ export const compareFlattenContracts = async (
 export const diffVerified2Local = async (
     addressA: string,
     etherscanParserA: EtherscanParser,
-    baseFolders: string[],
+    fileOrBaseFolders: string[],
     ignoreFilesOrFolders: string[] = [],
 ): Promise<CompareContracts> => {
     const files: DiffFiles[] = []
@@ -136,8 +157,34 @@ export const diffVerified2Local = async (
     const { files: aFiles, contractName: contractNameA } =
         await etherscanParserA.getSourceCode(addressA)
 
+    if (aFiles.length === 1 && isAddress(aFiles[0].filename)) {
+        // The verified contract is a single, flat file
+        const aFile = aFiles[0]
+
+        const bFile = fileOrBaseFolders[0]
+        if (isFolder(bFile)) {
+            throw Error(
+                `Contract with address ${addressA} is a single, flat file so cannot be compared to a local files under folder(s) "${fileOrBaseFolders.toString()}".`,
+            )
+        }
+
+        // Try and read the bFile
+        const bCode = readFile(bFile, 'sol')
+        files.push({
+            filename: aFile.filename,
+            aCode: aFile.code,
+            bCode,
+            result: aFile.code === bCode ? 'match' : 'changed',
+        })
+        return {
+            files,
+            contractNameA,
+            local: 'file',
+        }
+    }
+
     const bFiles = await getSolidityFilesFromFolderOrFiles(
-        baseFolders,
+        fileOrBaseFolders,
         ignoreFilesOrFolders,
     )
 
@@ -146,7 +193,7 @@ export const diffVerified2Local = async (
         // Look for A contract filename in local filesystem
         let bFile: string
         // for each of the base folders
-        for (const baseFolder of baseFolders) {
+        for (const baseFolder of fileOrBaseFolders) {
             bFile = bFiles.find((bFile) => {
                 const resolvedPath = resolve(
                     process.cwd(),
@@ -161,32 +208,28 @@ export const diffVerified2Local = async (
         }
 
         if (bFile) {
-            try {
-                debug(
-                    `Matched verified file ${aFile.filename} to local file ${bFile}`,
-                )
-                // Try and read code from bFile
-                const bCode = readFileSync(bFile, 'utf8')
+            debug(
+                `Matched verified file ${aFile.filename} to local file ${bFile}`,
+            )
+            // Try and read code from bFile
+            const bCode = readFile(bFile)
 
-                // The A contract filename exists in the B contract
-                if (aFile.code !== bCode) {
-                    // console.log(`${aFile.filename}  ${clc.red('different')}:`)
-                    files.push({
-                        filename: aFile.filename,
-                        aCode: aFile.code,
-                        bCode,
-                        result: 'changed',
-                    })
-                } else {
-                    files.push({
-                        filename: aFile.filename,
-                        aCode: aFile.code,
-                        bCode,
-                        result: 'match',
-                    })
-                }
-            } catch (err) {
-                throw Error(`Failed to read local file ${bFile}`)
+            // The A contract filename exists in the B contract
+            if (aFile.code !== bCode) {
+                // console.log(`${aFile.filename}  ${clc.red('different')}:`)
+                files.push({
+                    filename: aFile.filename,
+                    aCode: aFile.code,
+                    bCode,
+                    result: 'changed',
+                })
+            } else {
+                files.push({
+                    filename: aFile.filename,
+                    aCode: aFile.code,
+                    bCode,
+                    result: 'match',
+                })
             }
         } else {
             debug(

@@ -51,42 +51,41 @@ Generate UML class or storage diagrams from local Solidity code or verified Soli
 Can also flatten or compare verified source files on Etherscan-like explorers.
 
 Options:
-  -sf, --subfolders <value>                    number of subfolders that will be recursively searched for Solidity files. (default: all)
-  -f, --outputFormat <value>                   output file format. (choices: "svg", "png", "dot", "all", default: "svg")
-  -o, --outputFileName <value>                 output file name
-  -i, --ignoreFilesOrFolders <filesOrFolders>  comma separated list of files or folders to ignore
-  -n, --network <network>                      Ethereum network which maps to a blockchain explorer (choices: "mainnet", "goerli", "sepolia", "polygon", "arbitrum", "avalanche", "bsc", "crono", "fantom", "moonbeam",
-                                               "optimism", "gnosis", "celo", default: "mainnet", env: ETH_NETWORK)
-  -e, --explorerUrl <url>                      Override network with custom blockchain explorer API URL. eg Polygon Mumbai testnet https://api-testnet.polygonscan.com/api (env: EXPLORER_URL)
-  -k, --apiKey <key>                           Blockchain explorer API key. eg Etherscan, Arbiscan, Optimism, BscScan, CronoScan, FTMScan, PolygonScan or SnowTrace API key (env: SCAN_API_KEY)
-  -bc, --backColor <color>                     Canvas background color. "none" will use a transparent canvas. (default: "white")
-  -sc, --shapeColor <color>                    Basic drawing color for graphics, not text (default: "black")
-  -fc, --fillColor <color>                     Color used to fill the background of a node (default: "gray95")
-  -tc, --textColor <color>                     Color used for text (default: "black")
-  -v, --verbose                                run with debugging statements (default: false)
-  -V, --version                                output the version number
-  -h, --help                                   display help for command
+  -sf, --subfolders <value>                       number of subfolders that will be recursively searched for Solidity files. (default: all)
+  -f, --outputFormat <value>                      output file format. (choices: "svg", "png", "dot", "all", default: "svg")
+  -o, --outputFileName <value>                    output file name
+  -i, --ignoreFilesOrFolders <filesOrFolders>     comma-separated list of files or folders to ignore
+  -n, --network <network>                         Ethereum network which maps to a blockchain explorer (choices: "mainnet", "goerli", "sepolia", "polygon", "arbitrum", "avalanche", "bsc", "crono", "fantom", "moonbeam", "optimism", "gnosis", "celo", default: "mainnet", env: ETH_NETWORK)
+  -e, --explorerUrl <url>                         Override the `network` option with a custom blockchain explorer API URL. eg Polygon Mumbai testnet https://api-testnet.polygonscan.com/api (env: EXPLORER_URL)
+  -k, --apiKey <key>                              Blockchain explorer API key. eg Etherscan, Arbiscan, Optimism, BscScan, CronoScan, FTMScan, PolygonScan or SnowTrace API key (env: SCAN_API_KEY)
+  -bc, --backColor <color>                        Canvas background color. "none" will use a transparent canvas. (default: "white")
+  -sc, --shapeColor <color>                       Basic drawing color for graphics, not text (default: "black")
+  -fc, --fillColor <color>                        Color used to fill the background of a node (default: "gray95")
+  -tc, --textColor <color>                        Color used for text (default: "black")
+  -v, --verbose                                   run with debugging statements (default: false)
+  -V, --version                                   output the version number
+  -h, --help                                      display help for command
 
 Commands:
-  class [options] <fileFolderAddress>           Generates a UML class diagram from Solidity source code.
-  storage [options] <fileFolderAddress>         Visually display a contract's storage slots.
+  class [options] <fileFolderAddress>             Generates a UML class diagram from Solidity source code.
+  storage [options] <fileFolderAddress>           Visually display a contract's storage slots.
   
-                                                WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A known example is fixed-sized arrays declared with an expression will fail to be sized.
-  flatten <contractAddress>                     Merges verified source files for a contract from a Blockchain explorer into one local Solidity file.
+                                                  WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A known example is fixed-sized arrays declared with an expression will fail to be sized.
+  flatten <contractAddress>                       Merges verified source files for a contract from a Blockchain explorer into one local Solidity file.
   
-                                                In order for the merged code to compile, the following is done:
-                                                1. pragma solidity is set using the compiler of the verified contract.
-                                                2. All pragma solidity lines in the source files are commented out.
-                                                3. File imports are commented out.
-                                                4. "SPDX-License-Identifier" is renamed to "SPDX--License-Identifier".
-                                                5. Contract dependencies are analysed so the files are merged in an order that will compile.
-  diff [options] <addressA> <addressB_folders>  Compare verified Solidity code to another verified contract or local source files.
+                                                  In order for the merged code to compile, the following is done:
+                                                  1. pragma solidity is set using the compiler of the verified contract.
+                                                  2. All pragma solidity lines in the source files are commented out.
+                                                  3. File imports are commented out.
+                                                  4. "SPDX-License-Identifier" is renamed to "SPDX--License-Identifier".
+                                                  5. Contract dependencies are analysed so the files are merged in an order that will compile.
+  diff [options] <addressA> <fileFoldersAddress>  Compare verified Solidity code to another verified contract, a local file or local source files.
   
-                                                The results show the comparison of contract A to B.
-                                                The green sections are additions to contract B that are not in contract A.
-                                                The red sections are removals from contract A that are not in contract B.
-                                                The line numbers are from contract B. There are no line numbers for the red sections as they are not in contract B.
-  help [command]                                display help for command
+                                                  The results show the comparison of contract A to B.
+                                                  The green sections are additions to contract B that are not in contract A.
+                                                  The red sections are removals from contract A that are not in contract B.
+                                                  The line numbers are from contract B. There are no line numbers for the red sections as they are not in contract B.
+  help [command]                                  display help for command
 ```
 
 ### Class usage
@@ -182,7 +181,7 @@ Options:
 ```
 Usage: sol2uml diff [options] <addressA> <addressB or comma-separated folders>
 
-Compare verified Solidity code to another verified contract or local source files.
+Compare verified Solidity code to another verified contract, a local file or local source files.
 
 The results show the comparison of contract A to B.
 The green sections are additions to contract B that are not in contract A.
@@ -191,9 +190,10 @@ The line numbers are from contract B. There are no line numbers for the red sect
 
 Arguments:
   addressA                   Contract address in hexadecimal format with a 0x prefix of the first contract
-  addressB_folders           Location of the contract source code to compare against. Can be a contract address or comma-separated list of local folders.
-                             For example, 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 will get the verified source code from Etherscan
-                             or ".,node_modules" will compare against local files in the current folder and the node_modules folder.
+  fileFoldersAddress         Location of the contract source code to compare against. Can be a filename, comma-separated list of local folders or a contract address. Examples:
+    "flat.sol" will compare against a local file called "flat.sol". This must be used when address A's verified source code is a single, flat file.
+    ".,node_modules" will compare against local files under the current working folder and the node_modules folder. This is used when address A's verified source code is multiple files.
+    0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 will compare against the verified source code from Etherscan.
 
 Options:
   -s, --summary              Only show a summary of the file differences (default: false)

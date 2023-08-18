@@ -18,6 +18,14 @@ sol2uml diff 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 0xEA24e9Bac006DE9635Ac7f
 sol2uml diff 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c --aFile VaultStorage
 sol2uml diff 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c .,node_modules
 
+### OETH VaultAdmin
+sol2uml diff 0x31a91336414d3B955E494E7d485a6B06b55FC8fB .,node_modules
+
+## Old Vault contract with a single, flattened file
+sol2uml flatten 0x6bd6CC9605Ae43B424cB06363255b061A84DfFD3
+sol2uml diff 0x6bd6CC9605Ae43B424cB06363255b061A84DfFD3 Vault
+sol2uml diff 0x6bd6CC9605Ae43B424cB06363255b061A84DfFD3 Vault.sol
+
 ### OETH Frax Strategy
 ### Has added and changed contracts
 sol2uml diff 0x167747bf5b3b6bf2f7f7c4cce32c463e9598d425 0x5061cde874f75d119de3b07e191644097343ab9e -v
@@ -76,6 +84,7 @@ sol2uml diff 0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45 0x5615CDAb10dc425a742d64
 sol2uml diff 0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45 0xB971eF87ede563556b2ED4b1C0b0019111Dd85d2 --bNetwork bsc
 
 # Storage
+
 ## TestStorage
 sol2uml storage ../src/contracts -c TestStorage -v -o ../examples/storage
 
@@ -122,3 +131,13 @@ sol2uml storage 0x8a3b6D3739461137d20825c36ED6016803d3104F \
 
 ## Example from issue https://github.com/naddison36/sol2uml/issues/161
 sol2uml storage 0xa90dAF1975BA13c26F63976e0Fd73A21F966EE0D --hideExpand __gap --network polygon -v
+
+# Class
+
+## Maker DSR Strategy Implementation
+sol2uml 0x8a3b6D3739461137d20825c36ED6016803d3104F -v
+## Contract on Polygon
+sol2uml 0xa90dAF1975BA13c26F63976e0Fd73A21F966EE0D --network polygon -v
+
+## Local contracts
+sol2uml ../src/contracts -b TestStorage -v

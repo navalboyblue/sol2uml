@@ -71,18 +71,26 @@ export function convertDot2Svg(dot: string): any {
     }
 }
 
-export function writeSolidity(code: string, filename = 'solidity') {
-    const extension = path.extname(filename)
-    const outputFile = extension === '.sol' ? filename : filename + '.sol'
-    debug(`About to write Solidity to file ${outputFile}`)
+export function writeSourceCode(
+    code: string,
+    filename = 'source',
+    extension = '.sol',
+) {
+    const fileExtension = path.extname(filename)
+    const outputFile =
+        fileExtension === extension ? filename : filename + extension
+    debug(`About to write source code to file ${outputFile}`)
 
     writeFile(outputFile, code, (err) => {
         if (err) {
-            throw new Error(`Failed to write Solidity to file ${outputFile}`, {
-                cause: err,
-            })
+            throw new Error(
+                `Failed to write source code to file ${outputFile}`,
+                {
+                    cause: err,
+                },
+            )
         } else {
-            console.log(`Solidity written to ${outputFile}`)
+            console.log(`Source code written to ${outputFile}`)
         }
     })
 }

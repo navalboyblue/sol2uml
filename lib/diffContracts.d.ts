@@ -20,14 +20,15 @@ interface CompareContracts {
     files: DiffFiles[];
     contractNameA: string;
     contractNameB?: string;
+    local?: 'file' | 'folders';
 }
 export declare const compareVerifiedContracts: (addressA: string, aEtherscanParser: EtherscanParser, addressB: string, bEtherscanParser: EtherscanParser, options: DiffOptions) => Promise<void>;
-export declare const compareVerified2Local: (addressA: string, aEtherscanParser: EtherscanParser, localFolders: string[], options: DiffOptions) => Promise<void>;
+export declare const compareVerified2Local: (addressA: string, aEtherscanParser: EtherscanParser, fileOrBaseFolders: string[], options: DiffOptions) => Promise<void>;
 export declare const compareFlattenContracts: (addressA: string, addressB: string, aEtherscanParser: EtherscanParser, bEtherscanParser: EtherscanParser, options: FlattenAndDiffOptions) => Promise<{
     contractNameA: string;
     contractNameB: string;
 }>;
-export declare const diffVerified2Local: (addressA: string, etherscanParserA: EtherscanParser, baseFolders: string[], ignoreFilesOrFolders?: string[]) => Promise<CompareContracts>;
+export declare const diffVerified2Local: (addressA: string, etherscanParserA: EtherscanParser, fileOrBaseFolders: string[], ignoreFilesOrFolders?: string[]) => Promise<CompareContracts>;
 export declare const diffVerifiedContracts: (addressA: string, addressB: string, etherscanParserA: EtherscanParser, etherscanParserB: EtherscanParser, options: DiffOptions) => Promise<CompareContracts>;
 export declare const displayFileDiffSummary: (fileDiffs: DiffFiles[]) => void;
 export declare const displayFileDiffs: (fileDiffs: DiffFiles[], options?: {

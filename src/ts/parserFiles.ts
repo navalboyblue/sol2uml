@@ -129,19 +129,54 @@ export function getSolidityFilesFromFolderOrFile(
 }
 
 export function parseSolidityFile(fileName: string): ASTNode {
-    let solidityCode: string
-    try {
-        solidityCode = readFileSync(fileName, 'utf8')
-    } catch (err) {
-        throw new Error(`Failed to read solidity file ${fileName}.`, {
-            cause: err,
-        })
-    }
+    const solidityCode = readFile(fileName)
     try {
         return parse(solidityCode, {})
     } catch (err) {
         throw new Error(`Failed to parse solidity code in file ${fileName}.`, {
             cause: err,
         })
+    }
+}
+
+export const readFile = (fileName: string, extension?: string): string => {
+    try {
+        // try to read file with no extension
+        return readFileSync(fileName, 'utf8')
+    } catch (err) {
+        if (!extension) {
+            throw new Error(`Failed to read file "${fileName}".`, {
+                cause: err,
+            })
+        }
+
+        try {
+            // try to read file with extension
+            return readFileSync(`${fileName}.${extension}`, 'utf8')
+        } catch (err) {
+            throw new Error(
+                `Failed to read file "${fileName}" or "${fileName}.${extension}".`,
+                {
+                    cause: err,
+                },
+            )
+        }
+    }
+}
+
+export const isFile = (fileName: string): boolean => {
+    try {
+        const file = lstatSync(fileName)
+        return file.isFile()
+    } catch (err) {
+        return false
+    }
+}
+export const isFolder = (fileName: string): boolean => {
+    try {
+        const file = lstatSync(fileName)
+        return file.isDirectory()
+    } catch (err) {
+        return false
     }
 }
