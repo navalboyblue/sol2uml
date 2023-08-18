@@ -448,7 +448,7 @@ program
     .command('diff')
     .usage('[options] <addressA> <addressB or comma-separated folders>')
     .description(
-        `Compare verified Solidity code to another verified contract, a local file or local source files.
+        `Compare verified contract code on Etherscan-like explorers to another verified contract, a local file or multiple local files.
 
 The results show the comparison of contract A to B.
 The ${clc.green(

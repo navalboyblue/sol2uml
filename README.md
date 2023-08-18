@@ -6,6 +6,8 @@
 A visualisation tool for [Solidity](https://solidity.readthedocs.io/) contracts featuring:
 1. [Unified Modeling Language (UML)](https://en.wikipedia.org/wiki/Unified_Modeling_Language) [class diagram](https://en.wikipedia.org/wiki/Class_diagram) generator for Solidity contracts.
 2. Contract storage layout diagrams.
+3. Flatten Solidity files on Etherscan-like explorers to a local file.
+4. Diff contracts on Etherscan-like explorers.
 
 UML class diagram of Open Zeppelin's ERC20 token contracts generated from [version 4.7.3](https://github.com/OpenZeppelin/openzeppelin-contracts/tree/v4.7.3/contracts/token/ERC20)
 ![Open Zeppelin ERC20](./examples/OpenZeppelinERC20.svg)
@@ -181,7 +183,7 @@ Options:
 ```
 Usage: sol2uml diff [options] <addressA> <addressB or comma-separated folders>
 
-Compare verified Solidity code to another verified contract, a local file or local source files.
+Compare verified contract code on Etherscan-like explorers to another verified contract, a local file or multiple local files.
 
 The results show the comparison of contract A to B.
 The green sections are additions to contract B that are not in contract A.
