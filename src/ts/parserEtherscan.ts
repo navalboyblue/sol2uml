@@ -30,6 +30,7 @@ export const networks = <const>[
     'optimism',
     'gnosis',
     'celo',
+    'base',
 ]
 export type Network = (typeof networks)[number]
 
@@ -81,6 +82,9 @@ export class EtherscanParser {
         } else if (network === 'celo') {
             this.url = 'https://api.celoscan.io/api'
             this.apikey = 'JBV78T5KP15W7WKKKD6KC4J8RX2F4PK8AF'
+        } else if (network === 'base') {
+            this.url = 'https://api.basescan.org/api'
+            this.apikey = '9I5HUJHPD4ZNXJ4M8TZJ1HD2QBVP1U3M3J'
         } else {
             this.url = `https://api-${network}.etherscan.io/api`
         }

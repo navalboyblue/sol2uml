@@ -8,3 +8,5 @@ logs
 *.dot
 testDiagrams
 converterTest.svg
+tests/*.svg
+tests/*.sol

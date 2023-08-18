@@ -163,3 +163,8 @@ sol2uml 0xa90dAF1975BA13c26F63976e0Fd73A21F966EE0D --network polygon -v
 
 ## Local contracts
 sol2uml ../src/contracts -b TestStorage -v
+
+## Base chain
+sol2uml 0xCF205808Ed36593aa40a44F10c7f7C2F67d4A4d4 -v --network base
+## USDC on Base
+sol2uml 0x1833C6171E0A3389B156eAedB301CFfbf328B463 -v --network base
