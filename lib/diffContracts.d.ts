@@ -4,8 +4,6 @@ interface DiffOptions {
     bNetwork?: string;
     lineBuffer: number;
     summary?: boolean;
-}
-interface FlattenAndDiffOptions extends DiffOptions {
     aFile?: string;
     bFile?: string;
     saveFiles?: boolean;
@@ -24,7 +22,7 @@ interface CompareContracts {
 }
 export declare const compareVerifiedContracts: (addressA: string, aEtherscanParser: EtherscanParser, addressB: string, bEtherscanParser: EtherscanParser, options: DiffOptions) => Promise<void>;
 export declare const compareVerified2Local: (addressA: string, aEtherscanParser: EtherscanParser, fileOrBaseFolders: string[], options: DiffOptions) => Promise<void>;
-export declare const compareFlattenContracts: (addressA: string, addressB: string, aEtherscanParser: EtherscanParser, bEtherscanParser: EtherscanParser, options: FlattenAndDiffOptions) => Promise<{
+export declare const compareFlattenContracts: (addressA: string, addressB: string, aEtherscanParser: EtherscanParser, bEtherscanParser: EtherscanParser, options: DiffOptions) => Promise<{
     contractNameA: string;
     contractNameB: string;
 }>;
@@ -33,5 +31,6 @@ export declare const diffVerifiedContracts: (addressA: string, addressB: string,
 export declare const displayFileDiffSummary: (fileDiffs: DiffFiles[]) => void;
 export declare const displayFileDiffs: (fileDiffs: DiffFiles[], options?: {
     lineBuffer?: number;
+    aFile?: string;
 }) => void;
 export {};

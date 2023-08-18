@@ -478,11 +478,11 @@ The line numbers are from contract B. There are no line numbers for the red sect
     )
     .option(
         '-af --aFile <value>',
-        'Contract A source code filename without the .sol extension (default: compares all source files)',
+        'Limit code compare to contract A source file with the full path and extension as displayed in the file summary (default: compares all source files)',
     )
     .option(
         '-bf --bFile <value>',
-        'Contract B source code filename without the .sol extension (default: aFile if specified)',
+        'Contract B source file with the full path and extension as displayed in the file summary. Used if aFile is specified and the source file has been renamed (default: aFile if specified)',
     )
     .addOption(
         new Option(
@@ -535,8 +535,8 @@ The line numbers are from contract B. There are no line numbers for the red sect
                     combinedOptions.bNetwork || combinedOptions.network,
                     combinedOptions.bExplorerUrl || combinedOptions.explorerUrl,
                 )
-                // If flattening or just comparing a single file
-                if (options.flatten || options.aFile) {
+                // If flattening
+                if (options.flatten) {
                     await compareFlattenContracts(
                         addressA,
                         addressB,

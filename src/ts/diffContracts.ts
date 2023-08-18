@@ -18,9 +18,6 @@ interface DiffOptions {
     bNetwork?: string
     lineBuffer: number
     summary?: boolean
-}
-
-interface FlattenAndDiffOptions extends DiffOptions {
     aFile?: string
     bFile?: string
     saveFiles?: boolean
@@ -58,11 +55,15 @@ export const compareVerifiedContracts = async (
         displayFileDiffs(files, options)
     }
 
+    const aFileDesc = options.aFile ? `"${options.aFile}" file for the ` : ''
+    const bFileDesc = options.aFile
+        ? `"${options.bFile || options.aFile}" file for the `
+        : ''
     console.log(
-        `Compared the "${contractNameA}" contract with address ${addressA} on ${options.network}`,
+        `Compared the ${aFileDesc}"${contractNameA}" contract with address ${addressA} on ${options.network}`,
     )
     console.log(
-        `to the "${contractNameB}" contract with address ${addressB} on ${
+        `to the ${bFileDesc}"${contractNameB}" contract with address ${addressB} on ${
             options.bNetwork || options.network
         }\n`,
     )
@@ -87,8 +88,9 @@ export const compareVerified2Local = async (
         displayFileDiffs(files, options)
     }
 
+    const aFileDesc = `"${options.aFile}" file for the `
     console.log(
-        `Compared the "${contractNameA}" contract with address ${addressA} on ${options.network}`,
+        `Compared the ${aFileDesc}"${contractNameA}" contract with address ${addressA} on ${options.network}`,
     )
     if (local) {
         console.log(`to local file "${fileOrBaseFolders}"\n`)
@@ -103,7 +105,7 @@ export const compareFlattenContracts = async (
     addressB: string,
     aEtherscanParser: EtherscanParser,
     bEtherscanParser: EtherscanParser,
-    options: FlattenAndDiffOptions,
+    options: DiffOptions,
 ): Promise<{ contractNameA: string; contractNameB: string }> => {
     // Get verified Solidity code from Etherscan and flatten
     const { solidityCode: codeA, contractName: contractNameA } =
@@ -356,9 +358,14 @@ export const displayFileDiffSummary = (fileDiffs: DiffFiles[]) => {
 
 export const displayFileDiffs = (
     fileDiffs: DiffFiles[],
-    options: { lineBuffer?: number } = {},
+    options: { lineBuffer?: number; aFile?: string } = {},
 ) => {
+    let aFileFound = false
     for (const file of fileDiffs) {
+        if (options.aFile) {
+            if (file.filename !== options.aFile) continue
+            else aFileFound = true
+        }
         switch (file.result) {
             case 'added':
                 console.log(`Added ${file.filename}`)
@@ -373,5 +380,11 @@ export const displayFileDiffs = (
                 console.log(clc.red(file.aCode))
                 break
         }
+    }
+    // If filtering on an aFile, but it was not found
+    if (options.aFile && !aFileFound) {
+        throw new Error(
+            `Could not display code diff for file "${options.aFile}".\nMake sure the full file path and extension is used as displayed in the file summary.`,
+        )
     }
 }

@@ -13,6 +13,7 @@ sol2uml flatten 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2
 sol2uml diff 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c -v
 sol2uml diff 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c --summary
 sol2uml diff 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c --aFile Governable
+sol2uml diff 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c --aFile contracts/governance/Governable.sol
 sol2uml diff 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c --aFile VaultCore
 sol2uml diff 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c --aFile OETHVaultCore --bFile VaultCore -v
 sol2uml diff 0x1091588Cc431275F99DC5Df311fd8E1Ab81c89F3 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c --aFile VaultStorage
@@ -45,13 +46,34 @@ sol2uml diff 0x48Cf14DeA2f5dD31c57218877195913412D3278A 0x997c35A0bf8E21404aE437
 sol2uml diff 0x48Cf14DeA2f5dD31c57218877195913412D3278A 0x997c35A0bf8E21404aE4379841E0603C957138c3 --flatten
 sol2uml diff 0x997c35A0bf8E21404aE4379841E0603C957138c3 .,node_modules
 
+### OUSD Harvestor upgrade
+### Proxy
+sol2uml diff 0x21Fb5812D70B3396880D30e90D9e5C1202266c89 .,node_modules
+sol2uml diff 0x21Fb5812D70B3396880D30e90D9e5C1202266c89 .,node_modules --aFile contracts/governance/Governable.sol
+### Implementation
+sol2uml diff 0x5e72eb0ab74b5b4d2766a7956d210746ceab96e1 .,node_modules
+
 ### Harvesters
 sol2uml diff 0x5E72EB0ab74B5B4d2766a7956D210746Ceab96E1 0x1d6e0d7a1244276acf22a4e1dfc3c58186b1f624 -v
 
 ## Curve
-### stETH and frxETH Metapool
-### Vyper contracts
+### Vyper contracts - stETH and frxETH Metapool
 sol2uml diff 0xdc24316b9ae028f1497c275eb9192a3ea0f67022 0xa1f8a6807c402e4a15ef4eba36528a3fed24e577 -v
+### Vyper contracts - frxETH and OETH Metapool
+sol2uml diff 0xa1f8a6807c402e4a15ef4eba36528a3fed24e577 0x94b17476a93b3262d87b9a326965d1e91f9c13e7
+### Vyper contracts - rETH and OETH Metapool
+sol2uml diff 0x0f3159811670c117c372428d4e69ac32325e4d0f 0x94b17476a93b3262d87b9a326965d1e91f9c13e7
+### Vyper contracts Metapools deployed from Curve Facgtory 0xb9fc157394af804a3578134a6585c0dc9cc990d4
+sol2uml diff 0xd0a5ca7b57780240db17bb89773fda8f0efce274 0x94b17476a93b3262d87b9a326965d1e91f9c13e7
+sol2uml diff 0xd0a5ca7b57780240db17bb89773fda8f0efce274 0x4029f7dcbdf6059ed80da6856526e7510d64fa21
+sol2uml diff 0x4029f7dcbdf6059ed80da6856526e7510d64fa21 0xd4cedef74fb8885b8e1de21fba5a2e2f33f21f58
+sol2uml diff 0xAb3435bd2959fD713F7e50389Ff374Bfee2E3B4b 0x9a64dec8da8ce892ff711d715d9a8fc82e966a44
+
+sol2uml diff 0x0c58c509305a8a7fe9a6a60ceaac6185b96ecbb7 0xd82c2eb10f4895cabed6eda6eeee234bd1a9838b
+# 22 to 32 days ago
+sol2uml diff 0x9d1784097ffeadae206faf65188561abaa9093a8 0x16f780aed4e5caa1b0c9a3ae6f67460d4d0cfeb5
+# 16 to 32 days ago
+sol2uml diff 0x901ac4816b427cea4a26099ead7051c8e54dace9 0x16f780aed4e5caa1b0c9a3ae6f67460d4d0cfeb5
 ### FRAX/USDC (crvFRAX) mainnet v arbitrum
 sol2uml diff 0xdcef968d416a41cdac0ed8702fac8128a64241a2 0xc9b8a3fdecb9d5b218d02555a8baf332e5b740d5 --bNetwork arbitrum
 sol2uml diff 0xdcef968d416a41cdac0ed8702fac8128a64241a2 0xc9b8a3fdecb9d5b218d02555a8baf332e5b740d5 --bn arbitrum
