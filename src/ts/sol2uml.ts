@@ -297,7 +297,7 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
         "Comma-separated list of storage variables to not expand. That's arrays, structs, strings or bytes.",
         validateVariables,
     )
-    .option('-hv, --hideValue', 'Hide storage slot value column.', false)
+    .option('-hv, --hideValues', 'Hide storage slot value column.', false)
     .action(async (fileFolderAddress, options, command) => {
         try {
             const combinedOptions = {

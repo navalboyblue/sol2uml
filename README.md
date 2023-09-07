@@ -153,7 +153,7 @@ Options:
   -bn, --block <number>           Block number to get the contract storage values from. (default: "latest")
   -a, --array <number>            Number of slots to display at the start and end of arrays. (default: "2")
   -hx, --hideExpand <variables>   Comma-separated list of storage variables to not expand. That's arrays, structs, strings or bytes.
-  -hv, --hideValue                Hide storage slot value column. (default: false)
+  -hv, --hideValues               Hide storage slot value column. (default: false)
   -h, --help                      display help for command
 ```
 

@@ -46,17 +46,17 @@
 <text text-anchor="middle" x="330.22" y="-830.1" font-family="Courier New" font-size="14.00">Slot0: slot0 (32)</text>
 <polyline fill="none" stroke="black" points="74.81,-821.9 586.49,-821.9 "/>
 <text text-anchor="middle" x="330.24" y="-805.3" font-family="Courier New" font-size="14.00">uint256: feeGrowthGlobal0X128 (32)</text>
-<text text-anchor="middle" x="330.24" y="-788.5" font-family="Courier New" font-size="14.00"> 2,960,650,781,764,178,261,970,682,460,059,702 </text>
+<text text-anchor="middle" x="330.24" y="-788.5" font-family="Courier New" font-size="14.00"> 3,141,575,753,618,902,314,861,380,396,755,079 </text>
 <polyline fill="none" stroke="black" points="74.81,-780.3 586.49,-780.3 "/>
 <text text-anchor="middle" x="330.65" y="-763.7" font-family="Courier New" font-size="14.00">uint256: feeGrowthGlobal1X128 (32)</text>
-<text text-anchor="middle" x="330.65" y="-746.9" font-family="Courier New" font-size="14.00"> 1,374,036,368,985,088,463,311,695,279,075,445,167,670,073 </text>
+<text text-anchor="middle" x="330.65" y="-746.9" font-family="Courier New" font-size="14.00"> 1,476,837,458,243,011,038,905,158,664,011,357,740,202,680 </text>
 <polyline fill="none" stroke="black" points="74.81,-738.7 586.49,-738.7 "/>
 <text text-anchor="middle" x="330.53" y="-722.1" font-family="Courier New" font-size="14.00">ProtocolFees: protocolFees (32)</text>
 <polyline fill="none" stroke="black" points="74.81,-713.9 586.49,-713.9 "/>
-<text text-anchor="middle" x="177.52" y="-688.9" font-family="Courier New" font-size="14.00">unallocated (16)</text>
-<polyline fill="none" stroke="black" points="280.23,-672.3 280.23,-713.9 "/>
-<text text-anchor="middle" x="433.35" y="-697.3" font-family="Courier New" font-size="14.00">uint128: liquidity (16)</text>
-<text text-anchor="middle" x="433.35" y="-680.5" font-family="Courier New" font-size="14.00"> 11,080,188,788,718,016,856 </text>
+<text text-anchor="middle" x="179.52" y="-688.9" font-family="Courier New" font-size="14.00">unallocated (16)</text>
+<polyline fill="none" stroke="black" points="284.23,-672.3 284.23,-713.9 "/>
+<text text-anchor="middle" x="435.15" y="-697.3" font-family="Courier New" font-size="14.00">uint128: liquidity (16)</text>
+<text text-anchor="middle" x="435.15" y="-680.5" font-family="Courier New" font-size="14.00"> 4,996,732,881,094,561,428 </text>
 <polyline fill="none" stroke="black" points="74.81,-672.3 586.49,-672.3 "/>
 <text text-anchor="middle" x="330.23" y="-655.7" font-family="Courier New" font-size="14.00">mapping(int24=&gt;Tick.Info): ticks (32)</text>
 <polyline fill="none" stroke="black" points="74.81,-647.5 586.49,-647.5 "/>
@@ -96,13 +96,13 @@
 <text text-anchor="middle" x="1668.25" y="-896.7" font-family="Courier New" font-size="14.00"> 1,440 &#160;</text>
 <polyline fill="none" stroke="black" points="1819.07,-888.5 1819.07,-930.1 "/>
 <text text-anchor="middle" x="1944.69" y="-913.5" font-family="Courier New" font-size="14.00">uint16: observationIndex (2)</text>
-<text text-anchor="middle" x="1944.69" y="-896.7" font-family="Courier New" font-size="14.00"> 91 &#160;</text>
+<text text-anchor="middle" x="1944.69" y="-896.7" font-family="Courier New" font-size="14.00"> 31 &#160;</text>
 <polyline fill="none" stroke="black" points="2070.31,-888.5 2070.31,-930.1 "/>
 <text text-anchor="middle" x="2141.32" y="-913.5" font-family="Courier New" font-size="14.00">int24: tick (3)</text>
-<text text-anchor="middle" x="2141.32" y="-896.7" font-family="Courier New" font-size="14.00"> 202,590 &#160;</text>
+<text text-anchor="middle" x="2141.32" y="-896.7" font-family="Courier New" font-size="14.00"> 202,341 &#160;</text>
 <polyline fill="none" stroke="black" points="2212.33,-888.5 2212.33,-930.1 "/>
 <text text-anchor="middle" x="2417.76" y="-913.5" font-family="Courier New" font-size="14.00">uint160: sqrtPriceX96 (20)</text>
-<text text-anchor="middle" x="2417.76" y="-896.7" font-family="Courier New" font-size="14.00"> 1,985,480,518,623,008,364,161,237,024,370,364 </text>
+<text text-anchor="middle" x="2417.76" y="-896.7" font-family="Courier New" font-size="14.00"> 1,960,848,261,529,737,969,238,681,445,726,839 </text>
 </g>
 <!-- 10&#45;&gt;1 -->
 <g id="edge1" class="edge">
@@ -278,13 +278,13 @@
 <text text-anchor="middle" x="2859.62" y="-389.7" font-family="Courier New" font-size="14.00"> true &#160;</text>
 <polyline fill="none" stroke="black" points="3006.24,-381.5 3006.24,-423.1 "/>
 <text text-anchor="middle" x="3262.08" y="-406.5" font-family="Courier New" font-size="14.00">uint160: Observation.secondsPerLiquidityCumulativeX128 (20)</text>
-<text text-anchor="middle" x="3262.08" y="-389.7" font-family="Courier New" font-size="14.00"> 198,044,337,547,993,202,646,059,610,534,670,462,490,942 &#160;</text>
+<text text-anchor="middle" x="3262.08" y="-389.7" font-family="Courier New" font-size="14.00"> 198,044,337,547,994,018,516,395,723,981,929,874,703,065 &#160;</text>
 <polyline fill="none" stroke="black" points="3517.92,-381.5 3517.92,-423.1 "/>
 <text text-anchor="middle" x="3681.35" y="-406.5" font-family="Courier New" font-size="14.00">int56: Observation.tickCumulative (7)</text>
-<text text-anchor="middle" x="3681.35" y="-389.7" font-family="Courier New" font-size="14.00"> 11,392,419,312,646 &#160;</text>
+<text text-anchor="middle" x="3681.35" y="-389.7" font-family="Courier New" font-size="14.00"> 14,751,938,758,702 &#160;</text>
 <polyline fill="none" stroke="black" points="3844.77,-381.5 3844.77,-423.1 "/>
 <text text-anchor="middle" x="4012.4" y="-406.5" font-family="Courier New" font-size="14.00">uint32: Observation.blockTimestamp (4)</text>
-<text text-anchor="middle" x="4012.4" y="-389.7" font-family="Courier New" font-size="14.00"> 1,677,336,767 </text>
+<text text-anchor="middle" x="4012.4" y="-389.7" font-family="Courier New" font-size="14.00"> 1,694,022,875 </text>
 </g>
 <!-- 6 -->
 <g id="node7" class="node">
@@ -305,13 +305,13 @@
 <text text-anchor="middle" x="2859.62" y="-262.7" font-family="Courier New" font-size="14.00"> true &#160;</text>
 <polyline fill="none" stroke="black" points="3006.24,-254.5 3006.24,-296.1 "/>
 <text text-anchor="middle" x="3262.08" y="-279.5" font-family="Courier New" font-size="14.00">uint160: Observation.secondsPerLiquidityCumulativeX128 (20)</text>
-<text text-anchor="middle" x="3262.08" y="-262.7" font-family="Courier New" font-size="14.00"> 198,044,337,547,993,202,725,535,499,109,138,288,336,104 &#160;</text>
+<text text-anchor="middle" x="3262.08" y="-262.7" font-family="Courier New" font-size="14.00"> 198,044,337,547,994,018,518,030,147,136,431,465,207,986 &#160;</text>
 <polyline fill="none" stroke="black" points="3517.92,-254.5 3517.92,-296.1 "/>
 <text text-anchor="middle" x="3681.35" y="-279.5" font-family="Courier New" font-size="14.00">int56: Observation.tickCumulative (7)</text>
-<text text-anchor="middle" x="3681.35" y="-262.7" font-family="Courier New" font-size="14.00"> 11,392,954,044,646 &#160;</text>
+<text text-anchor="middle" x="3681.35" y="-262.7" font-family="Courier New" font-size="14.00"> 14,751,943,615,102 &#160;</text>
 <polyline fill="none" stroke="black" points="3844.77,-254.5 3844.77,-296.1 "/>
 <text text-anchor="middle" x="4012.4" y="-279.5" font-family="Courier New" font-size="14.00">uint32: Observation.blockTimestamp (4)</text>
-<text text-anchor="middle" x="4012.4" y="-262.7" font-family="Courier New" font-size="14.00"> 1,677,339,407 </text>
+<text text-anchor="middle" x="4012.4" y="-262.7" font-family="Courier New" font-size="14.00"> 1,694,022,899 </text>
 </g>
 <!-- 7 -->
 <g id="node8" class="node">

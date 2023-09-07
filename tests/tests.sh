@@ -125,6 +125,9 @@ sol2uml storage . -c VaultCore -hx ______gap -o VaultCoreNew.svg
 sol2uml storage 0x1ef0553feb80e6f133cae3092e38f0b23da6452b -hx ______gap -o VaultAdminOld.svg
 sol2uml storage . -c VaultAdmin -hx ______gap -o VaultAdminNew.svg
 
+## Origin OETH Vault Proxy
+sol2uml storage 0x39254033945AA2E4809Cc2977E7087BEE48bd7Ab
+
 ## Origin OETH VaultCore
 sol2uml storage 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c
 sol2uml storage 0xEA24e9Bac006DE9635Ac7fA4D767fFb64FB5645c -hx ______gap,_deprecated_swapTokens
