@@ -10,7 +10,7 @@ export interface ParserOptions {
     network?: Network
     explorerUrl?: string
     subfolders?: string
-    ignoreFilesOrFolders?: string
+    ignoreFilesOrFolders?: string[]
 }
 
 /**
@@ -55,12 +55,9 @@ export const parserUmlClasses = async (
         }
 
         const filesFolders: string[] = fileFolderAddress.split(',')
-        let ignoreFilesFolders = options.ignoreFilesOrFolders
-            ? options.ignoreFilesOrFolders.split(',')
-            : []
         result.umlClasses = await parseUmlClassesFromFiles(
             filesFolders,
-            ignoreFilesFolders,
+            options.ignoreFilesOrFolders || [],
             subfolders,
         )
     }

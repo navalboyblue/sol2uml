@@ -1,6 +1,14 @@
 
 export ARCHIVE_NODE_URL=https://
 
+## Class
+
+sol2uml class ../src/contracts/inheritance
+sol2uml class --ignoreFilesOrFolders parent ../src/contracts/inheritance
+sol2uml class --ignoreFilesOrFolders parent,ImportFromImport.sol ../src/contracts/inheritance
+sol2uml class --ignoreFilesOrFolders parent, ../src/contracts/inheritance
+
+
 # Flatten
 
 ### Aave V3 Pool mainnet

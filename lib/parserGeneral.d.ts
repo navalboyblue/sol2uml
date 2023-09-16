@@ -5,7 +5,7 @@ export interface ParserOptions {
     network?: Network;
     explorerUrl?: string;
     subfolders?: string;
-    ignoreFilesOrFolders?: string;
+    ignoreFilesOrFolders?: string[];
 }
 /**
  * Parses Solidity source code from a local filesystem or verified code on Etherscan

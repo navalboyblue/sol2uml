@@ -1,7 +1,7 @@
 import {
     validateAddress,
     validateLineBuffer,
-    validateVariables,
+    validateNames,
 } from '../validators'
 
 describe('Validators', () => {
@@ -65,7 +65,7 @@ describe('Validators', () => {
             ['GaP,gap1', ['GaP', 'gap1']],
             ['gap,__gap,___gap', ['gap', '__gap', '___gap']],
         ])('%s', (variable, expected) => {
-            expect(validateVariables(variable)).toEqual(expected)
+            expect(validateNames(variable)).toEqual(expected)
         })
     })
     describe('invalid variable names', () => {
@@ -83,8 +83,8 @@ describe('Validators', () => {
             'gap1,gap2,gap3,',
         ])('%s', (variables) => {
             // @ts-ignore
-            expect(() => validateVariables(variables)).toThrow(
-                'Must be a comma-separate list of storage variable names with no white spaces.',
+            expect(() => validateNames(variables)).toThrow(
+                'Must be a comma-separate list of names with no white spaces.',
             )
         })
     })

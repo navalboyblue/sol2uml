@@ -13,7 +13,8 @@ export const validateAddress = (address: string): string => {
     )
 }
 
-export const validateVariables = (variables: string): string[] => {
+// Splits a comma-separated list of names.
+export const validateNames = (variables: string): string[] => {
     try {
         if (
             typeof variables === 'string' &&
@@ -23,7 +24,7 @@ export const validateVariables = (variables: string): string[] => {
     } catch (err) {}
 
     throw new InvalidArgumentError(
-        `Must be a comma-separate list of storage variable names with no white spaces.`,
+        `Must be a comma-separate list of names with no white spaces.`,
     )
 }
 

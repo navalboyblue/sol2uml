@@ -56,7 +56,7 @@ Options:
   -sf, --subfolders <value>                       number of subfolders that will be recursively searched for Solidity files. (default: all)
   -f, --outputFormat <value>                      output file format. (choices: "svg", "png", "dot", "all", default: "svg")
   -o, --outputFileName <value>                    output file name
-  -i, --ignoreFilesOrFolders <filesOrFolders>     comma-separated list of files or folders to ignore
+  -i, --ignoreFilesOrFolders <names>              comma-separated list of files or folders to ignore
   -n, --network <network>                         Ethereum network which maps to a blockchain explorer (choices: "mainnet", "goerli", "sepolia", "polygon", "arbitrum", "avalanche", "bsc", "crono", "fantom", "moonbeam", "optimism", "gnosis", "celo", "base", default: "mainnet", env: ETH_NETWORK)
   -e, --explorerUrl <url>                         Override the `network` option with a custom blockchain explorer API URL. eg Polygon Mumbai testnet https://api-testnet.polygonscan.com/api (env: EXPLORER_URL)
   -k, --apiKey <key>                              Blockchain explorer API key. eg Etherscan, Arbiscan, Optimism, BscScan, CronoScan, FTMScan, PolygonScan or SnowTrace API key (env: SCAN_API_KEY)
@@ -106,7 +106,7 @@ Arguments:
                                         sol2uml 0x79fEbF6B9F76853EDBcBc913e6aAE8232cFB9De9
 
 Options:
-  -b, --baseContractNames <value>  only output contracts connected to these comma separated base contract names
+  -b, --baseContractNames <names>  only output contracts connected to these comma separated base contract names
   -d, --depth <value>              depth of connected classes to the base contracts. 1 will only show directly connected contracts, interfaces, libraries, structs and enums. (default: all)
   -c, --clusterFolders             cluster contracts into source folders (default: false)
   -hv, --hideVariables             hide variables from contracts, interfaces, structs and enums (default: false)

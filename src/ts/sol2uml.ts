@@ -27,7 +27,7 @@ import { isAddress } from './utils/regEx'
 import {
     validateAddress,
     validateLineBuffer,
-    validateVariables,
+    validateNames,
 } from './utils/validators'
 import { writeOutputFiles, writeSourceCode } from './writerFiles'
 
@@ -56,8 +56,9 @@ Can also flatten or compare verified source files on Etherscan-like explorers.`,
     )
     .option('-o, --outputFileName <value>', 'output file name')
     .option(
-        '-i, --ignoreFilesOrFolders <filesOrFolders>',
+        '-i, --ignoreFilesOrFolders <names>',
         'comma-separated list of files or folders to ignore',
+        validateNames,
     )
     .addOption(
         new Option(
@@ -116,8 +117,9 @@ program
     .description('Generates a UML class diagram from Solidity source code.')
     .argument('fileFolderAddress', argumentText)
     .option(
-        '-b, --baseContractNames <value>',
+        '-b, --baseContractNames <names>',
         'only output contracts connected to these comma-separated base contract names',
+        validateNames,
     )
     .addOption(
         new Option(
@@ -200,9 +202,8 @@ program
                 throw Error('Can not hide contracts when squashing contracts.')
             }
 
-            const baseContractNames = options.baseContractNames?.split(',')
-            if (baseContractNames) {
-                contractName = baseContractNames[0]
+            if (options.baseContractNames) {
+                contractName = options.baseContractNames[0]
             }
 
             // Filter out any class stereotypes that are to be hidden
@@ -212,15 +213,15 @@ program
             if (options.squash) {
                 filteredUmlClasses = squashUmlClasses(
                     filteredUmlClasses,
-                    baseContractNames || [contractName],
+                    options.baseContractNames || [contractName],
                 )
             }
 
-            if (baseContractNames || options.squash) {
+            if (options.baseContractNames || options.squash) {
                 // Find all the classes connected to the base classes after they have been squashed
                 filteredUmlClasses = classesConnectedToBaseContracts(
                     filteredUmlClasses,
-                    baseContractNames || [contractName],
+                    options.baseContractNames || [contractName],
                     options.depth,
                 )
             }
@@ -295,7 +296,7 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
     .option(
         '-hx, --hideExpand <variables>',
         "Comma-separated list of storage variables to not expand. That's arrays, structs, strings or bytes.",
-        validateVariables,
+        validateNames,
     )
     .option('-hv, --hideValues', 'Hide storage slot value column.', false)
     .action(async (fileFolderAddress, options, command) => {
