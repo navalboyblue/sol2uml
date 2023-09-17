@@ -9,8 +9,9 @@ export declare enum StorageSectionType {
 }
 export interface Variable {
     id: number;
-    fromSlot: number;
-    toSlot: number;
+    fromSlot?: number;
+    toSlot?: number;
+    offset?: string;
     byteSize: number;
     byteOffset: number;
     type: string;
@@ -45,6 +46,10 @@ export interface StorageSection {
  * @return storageSections array of storageSection objects
  */
 export declare const convertClasses2StorageSections: (contractName: string, umlClasses: UmlClass[], arrayItems: number, contractFilename?: string, noExpandVariables?: string[]) => StorageSection[];
+export declare const optionStorageVariables: (contractName: string, slotNames?: {
+    name: string;
+    offset: string;
+}[], slotTypes?: string[]) => Variable[];
 /**
  * Recursively adds new storage sections under a class attribute.
  * also returns the allowed enum values

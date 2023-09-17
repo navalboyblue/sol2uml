@@ -24,8 +24,9 @@ export enum StorageSectionType {
 
 export interface Variable {
     id: number
-    fromSlot: number
-    toSlot: number
+    fromSlot?: number
+    toSlot?: number
+    offset?: string
     byteSize: number
     byteOffset: number
     type: string
@@ -117,6 +118,62 @@ export const convertClasses2StorageSections = (
     adjustSlots(storageSections[0], 0, storageSections)
 
     return storageSections
+}
+
+export const optionStorageVariables = (
+    contractName: string,
+    slotNames?: { name: string; offset: string }[],
+    slotTypes?: string[],
+): Variable[] => {
+    // If no slot names
+    if (!slotNames?.length) {
+        return []
+    }
+    // The slotTypes default should mean this never happens
+    if (!slotTypes.length) {
+        throw Error(
+            `The slotTypes option must be used with the slotNames option`,
+        )
+    }
+
+    if (slotNames.length > 1 && slotTypes.length === 1) {
+        slotTypes = Array(slotNames.length).fill(slotTypes[0])
+        // slotTypes = slotTypes.fill(slotTypes[0], 1, slotNames.length - 1)
+    }
+
+    const variables: Variable[] = []
+    slotNames.forEach((slotName, i) => {
+        const { size: byteSize, dynamic } = calcElementaryTypeSize(slotTypes[i])
+        variables.push({
+            id: variableId++,
+            fromSlot: undefined,
+            toSlot: undefined,
+            offset: slotName.offset,
+            byteSize,
+            byteOffset: 0,
+            type: slotTypes[i],
+            attributeType: AttributeType.Elementary,
+            dynamic,
+            getValue: true,
+            displayValue: true,
+            name: slotName.name,
+            contractName,
+            referenceSectionId: undefined,
+            enumValues: undefined,
+        })
+    })
+    // Sort variables by offset hash
+    const sortedVariables = variables.sort((a, b) => {
+        if (a.offset < b.offset) {
+            return -1
+        }
+        if (a.offset > b.offset) {
+            return 1
+        }
+        return 0
+    })
+
+    return sortedVariables
 }
 
 /**
@@ -789,42 +846,44 @@ export const calcStorageByteSize = (
     }
 
     if (attribute.attributeType === AttributeType.Elementary) {
-        switch (attribute.type) {
-            case 'bool':
-                return { size: 1, dynamic: false }
-            case 'address':
-                return { size: 20, dynamic: false }
-            case 'string':
-            case 'bytes':
-                return { size: 32, dynamic: true }
-            case 'uint':
-            case 'int':
-            case 'ufixed':
-            case 'fixed':
-                return { size: 32, dynamic: false }
-            default:
-                const result = attribute.type.match(
-                    /[u]*(int|fixed|bytes)([0-9]+)/,
-                )
-                if (result === null || !result[2]) {
-                    throw Error(
-                        `Failed size elementary type "${attribute.type}"`,
-                    )
-                }
-                // If bytes
-                if (result[1] === 'bytes') {
-                    return { size: parseInt(result[2]), dynamic: false }
-                }
-                // TODO need to handle fixed types when they are supported
-
-                // If an int
-                const bitSize = parseInt(result[2])
-                return { size: bitSize / 8, dynamic: false }
-        }
+        return calcElementaryTypeSize(attribute.type)
     }
     throw new Error(
         `Failed to calc bytes size of attribute with name "${attribute.name}" and type ${attribute.type}`,
     )
+}
+
+const calcElementaryTypeSize = (
+    type: string,
+): { size: number; dynamic: boolean } => {
+    switch (type) {
+        case 'bool':
+            return { size: 1, dynamic: false }
+        case 'address':
+            return { size: 20, dynamic: false }
+        case 'string':
+        case 'bytes':
+            return { size: 32, dynamic: true }
+        case 'uint':
+        case 'int':
+        case 'ufixed':
+        case 'fixed':
+            return { size: 32, dynamic: false }
+        default:
+            const result = type.match(/[u]*(int|fixed|bytes)([0-9]+)/)
+            if (result === null || !result[2]) {
+                throw Error(`Failed size elementary type "${type}"`)
+            }
+            // If bytes
+            if (result[1] === 'bytes') {
+                return { size: parseInt(result[2]), dynamic: false }
+            }
+            // TODO need to handle fixed types when they are supported
+
+            // If an int
+            const bitSize = parseInt(result[2])
+            return { size: bitSize / 8, dynamic: false }
+    }
 }
 
 export const isElementary = (type: string): boolean => {

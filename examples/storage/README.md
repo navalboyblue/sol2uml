@@ -238,6 +238,33 @@ The storage slots for contract `D` in [inheritance/common.sol](../../src/contrac
 sol2uml storage ./src/contracts/inheritance -c D -o examples/storage/inheritanceStorage.svg
 ```
 
+## Assembly Accessed Slots
+
+The `-sn, --slotNames` option lists slots that are accessed by assembly rather than Solidity storage variables.
+The option value is a comma-separate list of slot names.
+The names can be a string, which will be hashed to a slot, or a 32 bytes hexadecimal string with a 0x prefix.
+
+In the below example, `OUSD.governor` is keccak256 hashed to slot `0x7bea13895fa79d2831e0a9e28edede30099005a50d652d8957cf8a607ee6ca4a`.
+
+The `-st, --slotTypes` options allows types to be specified for each of the named slots.
+This is a comma-separated list of types or a single type if all the types are the same.
+
+The following example is Origin's OETH Dripper contract.
+
+The `0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc` slot is the keccak256 hash of "eip1967.proxy.implementation" subtracted by 1.
+This holds the address of the implementation contract `0x2fdfbb2b905484f1445e23a97c97f65fe0e43dec` of the proxy contract `0xc0f42f73b8f01849a2dd99753524d4ba14317eb3`.
+
+![OETH Dripper](../../examples/storage/origin-oeth-dripper.svg)
+
+```
+sol2uml storage 0x2fdfbb2b905484f1445e23a97c97f65fe0e43dec -v \
+  --data --storage 0xc0f42f73b8f01849a2dd99753524d4ba14317eb3 \
+  --slotNames OUSD.governor,OUSD.pending.governor,OUSD.reentry.status,0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc \
+  --slotTypes address,address,bool,address \
+  --hideExpand drip \
+  -o examples/storage/origin-oeth-dripper.svg
+```
+
 ## USDC
 
 The USD Coin (USDC) token deployed to [0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48](https://etherscan.io/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48#code) on mainnet is a proxied contract.

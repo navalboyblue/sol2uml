@@ -2,6 +2,7 @@ import {
     validateAddress,
     validateLineBuffer,
     validateNames,
+    validateSlotNames,
 } from '../validators'
 
 describe('Validators', () => {
@@ -86,6 +87,48 @@ describe('Validators', () => {
             expect(() => validateNames(variables)).toThrow(
                 'Must be a comma-separate list of names with no white spaces.',
             )
+        })
+    })
+    describe('valid named slots', () => {
+        test.each([
+            [
+                'eip1967.proxy.implementation',
+                [
+                    {
+                        name: 'eip1967.proxy.implementation',
+                        offset: '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbd',
+                    },
+                ],
+            ],
+            [
+                '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc',
+                [
+                    {
+                        name: undefined,
+                        offset: '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc',
+                    },
+                ],
+            ],
+            [
+                'eip1967.proxy.implementation,0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc',
+                [
+                    {
+                        name: 'eip1967.proxy.implementation',
+                        offset: '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbd',
+                    },
+                    {
+                        name: undefined,
+                        offset: '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc',
+                    },
+                ],
+            ],
+        ])('%s', (slot, expected) => {
+            const mappedSlots = validateSlotNames(slot)
+            expect(mappedSlots).toHaveLength(expected.length)
+            mappedSlots.forEach((mappedSlot, i) => {
+                expect(mappedSlot.name).toEqual(expected[i].name)
+                expect(mappedSlot.offset).toEqual(expected[i].offset)
+            })
         })
     })
 })

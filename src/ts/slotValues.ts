@@ -46,15 +46,19 @@ export const addSlotValues = async (
     // for each variable, add all the slots used by the variable.
     const slots: BigNumberish[] = []
     valueVariables.forEach((variable) => {
-        for (let i = 0; variable.fromSlot + i <= variable.toSlot; i++) {
-            if (
-                variable.attributeType === AttributeType.Array &&
-                i >= arrayItems &&
-                i < variable.toSlot - arrayItems
-            ) {
-                continue
+        if (variable.offset) {
+            slots.push(BigNumber.from(variable.offset))
+        } else {
+            for (let i = 0; variable.fromSlot + i <= variable.toSlot; i++) {
+                if (
+                    variable.attributeType === AttributeType.Array &&
+                    i >= arrayItems &&
+                    i < variable.toSlot - arrayItems
+                ) {
+                    continue
+                }
+                slots.push(variable.fromSlot + i)
             }
-            slots.push(variable.fromSlot + i)
         }
     })
     // remove duplicate slot numbers
@@ -78,7 +82,20 @@ export const addSlotValues = async (
 
         // For each variable in the storage section
         for (const variable of storageSection.variables) {
-            if (variable.getValue && variable.fromSlot === fromSlot) {
+            if (
+                variable.getValue &&
+                variable.offset &&
+                BigNumber.from(variable.offset).eq(fromSlot)
+            ) {
+                debug(
+                    `Set slot value ${value} for section "${storageSection.name}", var type ${variable.type}, slot ${variable.offset}`,
+                )
+                variable.slotValue = value
+                // parse variable value from slot data
+                if (variable.displayValue) {
+                    variable.parsedValue = parseValue(variable)
+                }
+            } else if (variable.getValue && variable.fromSlot === fromSlot) {
                 debug(
                     `Set slot value ${value} for section "${storageSection.name}", var type ${variable.type}, slot ${variable.fromSlot} offset ${storageSection.offset}`,
                 )
@@ -89,7 +106,10 @@ export const addSlotValues = async (
                 }
             }
             // if variable is past the slot that has the value
-            else if (BigNumber.from(variable.toSlot).gt(fromSlot)) {
+            else if (
+                variable.toSlot &&
+                BigNumber.from(variable.toSlot).gt(fromSlot)
+            ) {
                 break
             }
         }

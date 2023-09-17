@@ -151,6 +151,8 @@ Options:
   -s, --storage <address>         The address of the contract with the storage values. This will be different from the contract with the code if a proxy contract is used. This is not needed if `fileFolderAddress` is an address and the contract is not proxied.
   -u, --url <url>                 URL of the Ethereum node to get storage values if the `data` option is used. (default: "http://localhost:8545", env: NODE_URL)
   -bn, --block <number>           Block number to get the contract storage values from. (default: "latest")
+  -sn, --slotNames <names>        Comma-separated list of slot names when accessed by assembly. The names can be a string, which will be hashed to a slot, or a 32 bytes hexadecimal string with a 0x prefix.
+  -st, --slotTypes <types>        Comma-separated list of types for the slots listed in the `slotNames` option. eg address,uint256,bool. If all types are the same, a single type can be used. eg address (default: ["bytes32"])
   -a, --array <number>            Number of slots to display at the start and end of arrays. (default: "2")
   -hx, --hideExpand <variables>   Comma-separated list of storage variables to not expand. That's arrays, structs, strings or bytes.
   -hv, --hideValues               Hide storage slot value column. (default: false)

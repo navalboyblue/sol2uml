@@ -165,6 +165,16 @@ sol2uml storage 0x8a3b6D3739461137d20825c36ED6016803d3104F \
 ## Example from issue https://github.com/naddison36/sol2uml/issues/161
 sol2uml storage 0xa90dAF1975BA13c26F63976e0Fd73A21F966EE0D --hideExpand __gap --network polygon -v
 
+## Origin OETH Dripper with slotNames and types
+sol2uml storage 0x2fdfbb2b905484f1445e23a97c97f65fe0e43dec \
+  --slotNames OUSD.governor,OUSD.pending.governor,OUSD.reentry.status,0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc \
+  --slotTypes address,address,bool,address
+sol2uml storage 0x2fdfbb2b905484f1445e23a97c97f65fe0e43dec -d -s 0xc0f42f73b8f01849a2dd99753524d4ba14317eb3 \
+  --slotNames OUSD.governor,OUSD.pending.governor,OUSD.reentry.status,0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc \
+  --slotTypes address,address,bool,address
+sol2uml storage 0x2fdfbb2b905484f1445e23a97c97f65fe0e43dec -d -s 0xc0f42f73b8f01849a2dd99753524d4ba14317eb3 \
+  --slotNames OUSD.governor,OUSD.pending.governor,OUSD.reentry.status,0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc
+
 # Class
 
 ## Maker DSR Strategy Implementation

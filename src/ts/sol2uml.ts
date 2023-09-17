@@ -8,6 +8,7 @@ import { convertUmlClasses2Dot } from './converterClasses2Dot'
 import {
     addDynamicVariables,
     convertClasses2StorageSections,
+    optionStorageVariables,
 } from './converterClasses2Storage'
 import { convertStorages2Dot } from './converterStorage2Dot'
 import {
@@ -28,6 +29,8 @@ import {
     validateAddress,
     validateLineBuffer,
     validateNames,
+    validateSlotNames,
+    validateTypes,
 } from './utils/validators'
 import { writeOutputFiles, writeSourceCode } from './writerFiles'
 
@@ -289,6 +292,17 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
         'latest',
     )
     .option(
+        '-sn, --slotNames <names>',
+        'Comma-separated list of slot names when accessed by assembly. The names can be a string, which will be hashed to a slot, or a 32 bytes hexadecimal string with a 0x prefix.',
+        validateSlotNames,
+    )
+    .option(
+        '-st, --slotTypes <types>',
+        'Comma-separated list of types for the slots listed in the `slotNames` option. eg address,uint256,bool. If all types are the same, a single type can be used. eg address',
+        validateTypes,
+        ['bytes32'],
+    )
+    .option(
         '-a, --array <number>',
         'Number of slots to display at the start and end of arrays.',
         '2',
@@ -327,6 +341,15 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
                 combinedOptions.contractFile,
                 options.hideExpand,
             )
+            const optionVariables = optionStorageVariables(
+                contractName,
+                options.slotNames,
+                options.slotTypes,
+            )
+            storageSections[0].variables = [
+                ...storageSections[0].variables,
+                ...optionVariables,
+            ]
 
             if (isAddress(fileFolderAddress)) {
                 // The first storage is the contract

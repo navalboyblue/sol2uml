@@ -4,6 +4,7 @@ import {
     Variable,
 } from './converterClasses2Storage'
 import { AttributeType } from './umlClass'
+import { shortBytes32 } from './utils/formatters'
 
 const debug = require('debug')('sol2uml')
 
@@ -81,7 +82,9 @@ export function convertStorage2Dot(
             : `{ slot${dataLine}`
     startingVariables.forEach((variable, i) => {
         const dataLine = options.data && displayData[i] ? linePad : ''
-        if (variable.fromSlot === variable.toSlot) {
+        if (variable.offset) {
+            dotString += ` | ${shortBytes32(variable.offset)}${dataLine}`
+        } else if (variable.fromSlot === variable.toSlot) {
             dotString += ` | ${variable.fromSlot}${dataLine}`
         } else {
             dotString += ` | ${variable.fromSlot}-${variable.toSlot}${dataLine}`
@@ -111,7 +114,9 @@ export function convertStorage2Dot(
     startingVariables.forEach((variable) => {
         // Get all the storage variables in this slot
         const slotVariables = storageSection.variables.filter(
-            (s) => s.fromSlot === variable.fromSlot,
+            (s) =>
+                (!s.offset && s.fromSlot === variable.fromSlot) ||
+                (s.offset && s.offset === variable.offset),
         )
         const usedBytes = slotVariables.reduce((acc, s) => acc + s.byteSize, 0)
         if (usedBytes < 32) {
