@@ -285,6 +285,7 @@ The slot values can be hidden with the `-hv, --hideVales` option.
 sol2uml storage 0x2fdfbb2b905484f1445e23a97c97f65fe0e43dec -v \
   --data --storage 0xc0f42f73b8f01849a2dd99753524d4ba14317eb3 \
   --slotNames OUSD.governor,OUSD.pending.governor,OUSD.reentry.status,0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc \
+  --slotTypes address,address,bool,address \
   --hideExpand drip --hideValues \
   -o examples/storage/origin-oeth-dripper-hide-values.svg
 ```
