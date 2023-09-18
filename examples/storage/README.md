@@ -265,6 +265,18 @@ sol2uml storage 0x2fdfbb2b905484f1445e23a97c97f65fe0e43dec -v \
   -o examples/storage/origin-oeth-dripper.svg
 ```
 
+It no `--slotTypes` option is used with the `--slotNames` option, sol2uml will default all the assembly accessed types to bytes32.
+
+![OETH Dripper Default Types](../../examples/storage/origin-oeth-dripper-default.svg)
+
+```
+sol2uml storage 0x2fdfbb2b905484f1445e23a97c97f65fe0e43dec -v \
+  --data --storage 0xc0f42f73b8f01849a2dd99753524d4ba14317eb3 \
+  --slotNames OUSD.governor,OUSD.pending.governor,OUSD.reentry.status,0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc \
+  --hideExpand drip \
+  -o examples/storage/origin-oeth-dripper-default.svg
+```
+
 ## USDC
 
 The USD Coin (USDC) token deployed to [0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48](https://etherscan.io/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48#code) on mainnet is a proxied contract.

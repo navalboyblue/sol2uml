@@ -10,6 +10,7 @@ import {
     toUtf8String,
 } from 'ethers/lib/utils'
 import { SlotValueCache } from './SlotValueCache'
+import { ethers } from 'ethers'
 
 const debug = require('debug')('sol2uml')
 
@@ -264,13 +265,23 @@ export const getSlotValues = async (
                 ? blockTag
                 : hexValue(BigNumber.from(blockTag))
 
-        // get cached values and missing slot keys from from cache
+        // get cached values and missing slot keys from the cache
         const { cachedValues, missingKeys } =
             SlotValueCache.readSlotValues(slotKeys)
 
         // If all values are in the cache then just return the cached values
         if (missingKeys.length === 0) {
             return cachedValues
+        }
+
+        // Check we are pointing to the correct chain by checking the contract has code
+        const provider = new ethers.providers.JsonRpcProvider(url)
+
+        const code = await provider.getCode(contractAddress, block)
+        if (!code || code === '0x') {
+            const msg = `Address ${contractAddress} has no code. Check your "-u, --url" option or "NODE_URL" environment variable is pointing to the correct node.\nurl: ${url}`
+            console.error(msg)
+            throw Error(msg)
         }
 
         debug(

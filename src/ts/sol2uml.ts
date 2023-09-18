@@ -1,7 +1,6 @@
 #! /usr/bin/env node
 
 import { Command, Option } from 'commander'
-import { ethers } from 'ethers'
 import { basename } from 'path'
 
 import { convertUmlClasses2Dot } from './converterClasses2Dot'
@@ -33,6 +32,7 @@ import {
     validateTypes,
 } from './utils/validators'
 import { writeOutputFiles, writeSourceCode } from './writerFiles'
+import { getBlock } from './utils/block'
 
 const clc = require('cli-color')
 const program = new Command()
@@ -373,16 +373,7 @@ WARNING: sol2uml does not use the Solidity compiler so may differ with solc. A k
                     storageAddress = fileFolderAddress
                 }
 
-                let block = combinedOptions.block
-                if (block === 'latest') {
-                    const provider = new ethers.providers.JsonRpcProvider(
-                        combinedOptions.url,
-                    )
-                    block = await provider.getBlockNumber()
-                    debug(
-                        `Latest block is ${block}. All storage slot values will be from this block.`,
-                    )
-                }
+                let block = await getBlock(combinedOptions)
 
                 // Get slot values for each storage section
                 for (const storageSection of storageSections) {
