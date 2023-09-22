@@ -88,7 +88,7 @@ export const compareVerified2Local = async (
         displayFileDiffs(files, options)
     }
 
-    const aFileDesc = `"${options.aFile}" file for the `
+    const aFileDesc = options.aFile ? `"${options.aFile}" file with the ` : ''
     console.log(
         `Compared the ${aFileDesc}"${contractNameA}" contract with address ${addressA} on ${options.network}`,
     )
@@ -125,7 +125,7 @@ export const compareFlattenContracts = async (
 
     if (options.bFile || options.aFile) {
         console.log(
-            `Compared the "${options.aFile}" file for the "${contractNameA}" contract with address ${addressA} on ${options.network}`,
+            `Compared the "${options.aFile}" file with the "${contractNameA}" contract with address ${addressA} on ${options.network}`,
         )
         console.log(
             `to the "${
