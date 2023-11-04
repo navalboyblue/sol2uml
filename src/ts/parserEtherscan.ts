@@ -30,6 +30,7 @@ export const networks = <const>[
     'optimism',
     'gnosis',
     'celo',
+    'scroll',
     'base',
 ]
 export type Network = (typeof networks)[number]
@@ -79,6 +80,9 @@ export class EtherscanParser {
         } else if (network === 'gnosis') {
             this.url = 'https://api.gnosisscan.io/api'
             this.apikey = '2RWGXIWK538EJ8XSP9DE2JUINSCG7UCSJB'
+        } else if (network === 'scroll') {
+            this.url = 'https://api.scrollscan.com/api'
+            this.apikey = '4V37ZJFIN9AURJSU9YG1RP3MSVTPH6D6Z4'
         } else if (network === 'celo') {
             this.url = 'https://api.celoscan.io/api'
             this.apikey = 'JBV78T5KP15W7WKKKD6KC4J8RX2F4PK8AF'
