@@ -103,9 +103,8 @@ export class EtherscanParser {
         umlClasses: UmlClass[]
         contractName: string
     }> {
-        const { files, contractName, remappings } = await this.getSourceCode(
-            contractAddress,
-        )
+        const { files, contractName, remappings } =
+            await this.getSourceCode(contractAddress)
 
         let umlClasses: UmlClass[] = []
 
