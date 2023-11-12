@@ -214,7 +214,7 @@ const parseVariables = (
         const parentClass = findAssociatedClass(parent, umlClass, umlClasses)
         if (!parentClass) {
             throw Error(
-                `Failed to find inherited contract "${parent.targetUmlClassName}" of "${umlClass.absolutePath}"`,
+                `Failed to find inherited contract "${parent.targetUmlClassName}" sourced from "${umlClass.name}" with path "${umlClass.absolutePath}"`,
             )
         }
         // recursively parse inherited contract
@@ -664,11 +664,12 @@ const findTypeClass = (
     const association = {
         referenceType: ReferenceType.Memory,
         targetUmlClassName: types.length === 1 ? types[0] : types[1],
+        parentUmlClassName: types.length === 1 ? undefined : types[0],
     }
     const typeClass = findAssociatedClass(association, umlClass, otherClasses)
     if (!typeClass) {
         throw Error(
-            `Failed to find user defined type "${userType}" in attribute "${attribute.name}" of type "${attribute.attributeType}""`,
+            `Failed to find user defined type "${userType}" in attribute "${attribute.name}" of from class "${umlClass.name}" with path "${umlClass.absolutePath}"`,
         )
     }
     return typeClass

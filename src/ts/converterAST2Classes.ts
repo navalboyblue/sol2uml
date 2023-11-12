@@ -458,6 +458,7 @@ function addAssociations(
                 }
                 if (node.typeName.type === 'UserDefinedTypeName') {
                     // Library references can have a Library dot variable notation. eg Set.Data
+                    // Structs and enums can also be under a library or contract
                     const { umlClassName, structOrEnum } = parseClassName(
                         node.typeName.namePath,
                     )
@@ -468,6 +469,7 @@ function addAssociations(
                     if (structOrEnum) {
                         umlClass.addAssociation({
                             referenceType,
+                            parentUmlClassName: umlClassName,
                             targetUmlClassName: structOrEnum,
                         })
                     }

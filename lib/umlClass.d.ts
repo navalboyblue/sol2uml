@@ -66,6 +66,7 @@ export declare enum ReferenceType {
 }
 export interface Association {
     referenceType: ReferenceType;
+    parentUmlClassName?: string;
     targetUmlClassName: string;
     realization?: boolean;
 }

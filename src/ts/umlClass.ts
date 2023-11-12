@@ -81,6 +81,8 @@ export enum ReferenceType {
 
 export interface Association {
     referenceType: ReferenceType
+    // For the contract that contains structs and enums
+    parentUmlClassName?: string
     targetUmlClassName: string
     realization?: boolean
 }
@@ -144,20 +146,17 @@ export class UmlClass implements ClassProperties {
             )
         }
 
-        // Will not duplicate lines to the same class and stereotype
-        // const targetUmlClass = `${association.targetUmlClassName}#${association.targetUmlClassStereotype}`
-        const targetUmlClass = association.targetUmlClassName
-
         // If association doesn't already exist
-        if (!this.associations[targetUmlClass]) {
-            this.associations[targetUmlClass] = association
+        if (!this.associations[association.targetUmlClassName]) {
+            this.associations[association.targetUmlClassName] = association
         }
         // associate already exists
         else {
             // If new attribute reference type is Storage
             if (association.referenceType === ReferenceType.Storage) {
-                this.associations[targetUmlClass].referenceType =
-                    ReferenceType.Storage
+                this.associations[
+                    association.targetUmlClassName
+                ].referenceType = ReferenceType.Storage
             }
         }
     }

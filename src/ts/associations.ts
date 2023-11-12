@@ -1,4 +1,4 @@
-import { Association, Import, UmlClass } from './umlClass'
+import { Association, UmlClass } from './umlClass'
 
 // Find the UML class linked to the association
 export const findAssociatedClass = (
@@ -30,23 +30,23 @@ const isAssociated = (
     association: Association,
     sourceUmlClass: UmlClass,
     targetUmlClass: UmlClass,
-): boolean | Import => {
+): boolean => {
     return (
         // class is in the same source file
         (association.targetUmlClassName === targetUmlClass.name &&
             sourceUmlClass.absolutePath === targetUmlClass.absolutePath) ||
         // imported classes with no explicit import names
         (association.targetUmlClassName === targetUmlClass.name &&
-            sourceUmlClass.imports.find(
+            sourceUmlClass.imports.some(
                 (i) =>
                     i.absolutePath === targetUmlClass.absolutePath &&
                     i.classNames.length === 0,
             )) ||
         // imported classes with explicit import names or import aliases
-        sourceUmlClass.imports.find(
-            (i) =>
-                i.absolutePath === targetUmlClass.absolutePath &&
-                i.classNames.find(
+        sourceUmlClass.imports.some(
+            (importLink) =>
+                importLink.absolutePath === targetUmlClass.absolutePath &&
+                importLink.classNames.some(
                     (importedClass) =>
                         // no import alias
                         (association.targetUmlClassName ===
@@ -56,6 +56,17 @@ const isAssociated = (
                         // import alias
                         (association.targetUmlClassName ===
                             importedClass.alias &&
+                            importedClass.className === targetUmlClass.name) ||
+                        // If a parent contract with no import alias
+                        (association.parentUmlClassName !== undefined &&
+                            association.parentUmlClassName ===
+                                importedClass.className &&
+                            importedClass.className === targetUmlClass.name &&
+                            importedClass.alias == undefined) ||
+                        // If a parent contract with import alias
+                        (association.parentUmlClassName !== undefined &&
+                            association.parentUmlClassName ===
+                                importedClass.alias &&
                             importedClass.className === targetUmlClass.name),
                 ),
         )
