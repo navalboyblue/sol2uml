@@ -11,3 +11,4 @@ converterTest.svg
 tests/*.svg
 tests/*.png
 tests/*.sol
+bin
