@@ -79,6 +79,7 @@ export interface ClassProperties {
     name: string;
     absolutePath: string;
     relativePath: string;
+    parentId?: number;
     importedFileNames?: string[];
     stereotype?: ClassStereotype;
     enums?: number[];
@@ -96,6 +97,7 @@ export declare class UmlClass implements ClassProperties {
     name: string;
     absolutePath: string;
     relativePath: string;
+    parentId?: number;
     imports: Import[];
     stereotype?: ClassStereotype;
     constants: Constants[];

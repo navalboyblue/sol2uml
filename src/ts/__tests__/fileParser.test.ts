@@ -3,10 +3,9 @@ import { getSolidityFilesFromFolderOrFile } from '../index'
 describe('Parser', () => {
     describe('getSolidityFilesFromFolderOrFile', () => {
         test('get Solidity files from contracts folder', async () => {
-            const files = await getSolidityFilesFromFolderOrFile(
-                './src/contracts'
-            )
-            expect(files).toHaveLength(39)
+            const files =
+                await getSolidityFilesFromFolderOrFile('./src/contracts')
+            expect(files).toHaveLength(40)
         })
 
         test('get Solidity files from folder with no sol files', async () => {
@@ -16,7 +15,7 @@ describe('Parser', () => {
 
         test('get Solidity file', async () => {
             const files = await getSolidityFilesFromFolderOrFile(
-                './src/contracts/Caller.sol'
+                './src/contracts/Caller.sol',
             )
             expect(files).toHaveLength(1)
         })
@@ -27,7 +26,7 @@ describe('Parser', () => {
 
                 try {
                     await getSolidityFilesFromFolderOrFile(
-                        './FleDoesNotExist.sol'
+                        './FleDoesNotExist.sol',
                     )
                 } catch (err) {
                     expect(err.message).toMatch(/No such file or folder/)
@@ -41,7 +40,7 @@ describe('Parser', () => {
                     await getSolidityFilesFromFolderOrFile('./package.json')
                 } catch (err) {
                     expect(err.message).toMatch(
-                        /does not have a .sol extension/
+                        /does not have a .sol extension/,
                     )
                 }
             })

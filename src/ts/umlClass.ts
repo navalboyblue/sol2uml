@@ -98,6 +98,8 @@ export interface ClassProperties {
     name: string
     absolutePath: string
     relativePath: string
+    // Used for structs and enums
+    parentId?: number
     importedFileNames?: string[]
     stereotype?: ClassStereotype
     enums?: number[]
@@ -115,6 +117,8 @@ export class UmlClass implements ClassProperties {
     name: string
     absolutePath: string
     relativePath: string
+    // Used for structs and enums
+    parentId?: number
     imports: Import[] = []
     stereotype?: ClassStereotype
 

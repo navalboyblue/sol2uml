@@ -67,12 +67,11 @@ export function convertAST2UmlClasses(
                         : relativePath, // from Etherscan so don't resolve
                     relativePath,
                 })
+                umlClasses.push(umlClass)
 
                 parseContractDefinition(childNode, umlClass)
 
                 debug(`Added contract ${childNode.name}`)
-
-                umlClasses.push(umlClass)
             } else if (childNode.type === 'StructDefinition') {
                 debug(`Adding file level struct ${childNode.name}`)
 
@@ -400,6 +399,7 @@ function parseContractDefinition(node: ContractDefinition, umlClass: UmlClass) {
                 name: subNode.name,
                 absolutePath: umlClass.absolutePath,
                 relativePath: umlClass.relativePath,
+                parentId: umlClass.id,
                 stereotype: ClassStereotype.Struct,
             })
             parseStructDefinition(subNode, structClass)
@@ -412,6 +412,7 @@ function parseContractDefinition(node: ContractDefinition, umlClass: UmlClass) {
                 name: subNode.name,
                 absolutePath: umlClass.absolutePath,
                 relativePath: umlClass.relativePath,
+                parentId: umlClass.id,
                 stereotype: ClassStereotype.Enum,
             })
             parseEnumDefinition(subNode, enumClass)

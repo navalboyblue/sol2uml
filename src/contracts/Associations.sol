@@ -1,22 +1,26 @@
 pragma solidity ^0.8.6;
 
-import "./libraries/BigInt.sol";
-import "./libraries/Set.sol";
+import './libraries/BigInt.sol';
+import './libraries/Set.sol';
+import {ImportedFileLevelStruct, ImportedFileLevelStructAliased as IFLSA, ImportedTypesInContract} from './ImportedTypes.sol';
 
 interface ConstructorParamInterface {
-    function someFunction() external  returns (bool);
+    function someFunction() external returns (bool);
 }
 
-contract ConstructorParamAbstract {
+abstract contract ConstructorParamAbstract {
     string test = 'Abstract contract referenced by constructor parameter';
-    function abstractFunction() public  returns (bool);
+
+    function abstractFunction() public virtual returns (bool);
+
     function concreteFunction() public returns (string memory) {
         return test;
     }
 }
 
 contract ConstructorParamAssoc {
-    string public test = 'Concrete contract referenced by constructor parameter';
+    string public test =
+        'Concrete contract referenced by constructor parameter';
     string constructorAssoc;
 }
 
@@ -24,9 +28,11 @@ interface FunctionParamInterface {
     function someFunction() external returns (bool);
 }
 
-contract FunctionParamAbstract {
+abstract contract FunctionParamAbstract {
     string public test = 'Abstract contract referenced by function parameter';
-    function abstractFunction() public  returns (bool);
+
+    function abstractFunction() public virtual returns (bool);
+
     function concreteFunction() public returns (string memory) {
         return test;
     }
@@ -37,7 +43,8 @@ contract FunctionParamAssoc {
 }
 
 contract FunctionReturnParamAssoc {
-    string public test = 'Concrete contract referenced by function return parameter';
+    string public test =
+        'Concrete contract referenced by function return parameter';
 }
 
 contract ConstructorContract {
@@ -48,9 +55,11 @@ interface ContractInterface {
     function someFunction() external returns (bool);
 }
 
-contract ContractAbstract {
+abstract contract ContractAbstract {
     string public test = 'Abstract contract referenced by contract';
-    function abstractFunction() public  returns (bool);
+
+    function abstractFunction() public virtual returns (bool);
+
     function concreteFunction() public view returns (string memory) {
         return test;
     }
@@ -64,9 +73,11 @@ interface MappingInterface {
     function someFunction() external returns (string memory);
 }
 
-contract MappingAbstract {
+abstract contract MappingAbstract {
     string public test = 'Abstract contract referenced by mapping';
-    function abstractFunction() public  returns (bool);
+
+    function abstractFunction() public virtual returns (bool);
+
     function concreteFunction() public view returns (string memory) {
         return test;
     }
@@ -80,9 +91,11 @@ interface StructInterface {
     function someFunction() external returns (string memory);
 }
 
-contract StructAbstract {
+abstract contract StructAbstract {
     string public test = 'Abstract contract referenced by struct';
-    function abstractFunction() public  returns (bool);
+
+    function abstractFunction() public virtual returns (bool);
+
     function concreteFunction() public view returns (string memory) {
         return test;
     }
@@ -146,12 +159,55 @@ library ConstructorDeclarationLibrary {
     }
 }
 
+library LibraryWithStructUnlinked {
+    struct LibStruct {
+        address should;
+        uint256 not;
+        bool link;
+    }
+}
+
+library LibraryWithStructLinked {
+    struct LibStruct {
+        address one;
+        uint256 two;
+        bool linked;
+    }
+}
+
+library LibraryWithEnumUnlinked {
+    enum LibEnum {
+        should,
+        not,
+        link
+    }
+}
+
+library LibraryWithEnumLinked {
+    enum LibEnum {
+        should,
+        linked
+    }
+
+    enum unusedEnum {
+        should,
+        not,
+        link
+    }
+}
+
 struct StructOfStruct {
     address owner;
     bool flag;
 }
 
-struct FileLevelStruct {
+struct FileLevelStructUnlinked {
+    address should;
+    int8 not;
+    bytes link;
+}
+
+struct FileLevelStructLinked {
     StructOfStruct structOfStruct;
 }
 
@@ -179,17 +235,26 @@ enum FileLevelMemoryEnum {
 
 uint256 constant FileConstant = 5;
 
-contract Associations is ContractInterface, ContractAbstract, ContractConcrete {
-
+abstract contract Associations is
+    ContractInterface,
+    ContractAbstract,
+    ContractConcrete
+{
     uint256 public someInt;
 
-    Set.Data someLibrary;
-    SomeStruct someStruct;
     uint256[] someIntArray;
     address[FileConstant] constantLengthArray;
 
+    Set.Data structFromLib;
+    SomeStruct structFromContract;
+    FileLevelStructLinked fileLevelStruct;
+    ImportedFileLevelStruct importedFileLevelStruct;
+    IFLSA importedFileLevelStructAliased;
+    ImportedTypesInContract.ImportedContractLevelStruct importedTypesInContract;
+
     FileLevelStorageEnum fileLevelEnum;
-    FileLevelStruct fileLevelStruct;
+    LibraryWithStructLinked.LibStruct libStruct;
+    LibraryWithEnumLinked.LibEnum libEnum;
 
     SomeEnum someEnum;
     FileLevelStorageEnum fileLevelStorageEnum;
@@ -202,11 +267,11 @@ contract Associations is ContractInterface, ContractAbstract, ContractConcrete {
         StructConcrete structConcrete;
         StructInterface structInterface;
         StructAbstract structAbstract;
-        mapping (address => MappingInStructConcrete) mappingInStructConcrete;
+        mapping(address => MappingInStructConcrete) mappingInStructConcrete;
         StructInStruct structInStruct;
         uint256 count;
-        mapping (address => string) names;
-        mapping (address => StructInStructMapping) balances;
+        mapping(address => string) names;
+        mapping(address => StructInStructMapping) balances;
     }
 
     struct StructInStructMapping {
@@ -225,91 +290,86 @@ contract Associations is ContractInterface, ContractAbstract, ContractConcrete {
         Processed
     }
 
-    constructor (
+    constructor(
         ConstructorParamAssoc constructorAssoc,
         ConstructorParamAbstract constructorAbstract,
-        ConstructorParamInterface constructorInterface) public {
-            someInt = 11;
+        ConstructorParamInterface constructorInterface
+    ) {
+        someInt = 11;
     }
 
     function someFunction(
         FunctionParamAssoc paramAssoc,
         FunctionParamAbstract paramAbstract,
         FunctionParamInterface paramInterface,
-        address bodyConcreteAddress) public
-        returns (FunctionReturnParamAssoc returnParamAssoc) {
-            someInt = 22;
+        address bodyConcreteAddress
+    ) public returns (FunctionReturnParamAssoc returnParamAssoc) {
+        someInt = 22;
 
-            NewConcrete newConcrete = new NewConcrete();
-            NewAddressConcrete newAddressConcrete = new NewAddressConcrete();
+        NewConcrete newConcrete = new NewConcrete();
+        NewAddressConcrete newAddressConcrete = new NewAddressConcrete();
 
-            uint256 counter = 0;
-            for (uint i = 0; i < someIntArray.length; i++) {
-                ForLoopConcrete forLoopConcrete = new ForLoopConcrete();
-                counter += someIntArray[i] + forLoopConcrete.someNumber();
+        uint256 counter = 0;
+        for (uint i = 0; i < someIntArray.length; i++) {
+            ForLoopConcrete forLoopConcrete = new ForLoopConcrete();
+            counter += someIntArray[i] + forLoopConcrete.someNumber();
+        }
+
+        if (counter > 5) {
+            IfTrueConcrete ifTrueConcrete = new IfTrueConcrete();
+            counter += ifTrueConcrete.someNumber();
+        } else {
+            IfFalseConcrete ifFalseConcrete = new IfFalseConcrete();
+            counter += ifFalseConcrete.someNumber();
+
+            while (counter < 100) {
+                WhileConcrete whileConcrete = new WhileConcrete();
+                counter += whileConcrete.someNumber();
             }
 
-            if (counter > 5) {
-                IfTrueConcrete ifTrueConcrete = new IfTrueConcrete();
-                counter += ifTrueConcrete.someNumber();
-            }
-            else {
-                IfFalseConcrete ifFalseConcrete = new IfFalseConcrete();
-                counter += ifFalseConcrete.someNumber();
+            do {
+                DoWhileConcrete doWhileConcrete = new DoWhileConcrete();
+                counter += doWhileConcrete.someNumber();
+            } while (counter < 200);
+        }
 
-                while(counter < 100) {
-                    WhileConcrete whileConcrete = new WhileConcrete();
-                    counter += whileConcrete.someNumber();
-                }
+        BodyConcrete(bodyConcreteAddress);
 
-                do {
-                    DoWhileConcrete doWhileConcrete = new DoWhileConcrete();
-                    counter += doWhileConcrete.someNumber();
-                }
-                while(counter < 200);
-            }
-
-            BodyConcrete(bodyConcreteAddress);
-
-            uint256 varRef = VariableDeclarationLibrary.max(1,2);
-            require(varRef > 10, 'Testing associations of varible declaration');
+        uint256 varRef = VariableDeclarationLibrary.max(1, 2);
+        require(varRef > 10, 'Testing associations of varible declaration');
     }
 
     using BigInt for BigInt.bigint;
 
     function someBigIntFunction() public pure {
         BigInt.bigint memory x = BigInt.fromUint(7);
-        BigInt.bigint memory y = BigInt.fromUint(uint(-1));
+        BigInt.bigint memory y = BigInt.fromUint(type(uint256).max);
         BigInt.bigint memory z = x.add(y);
         assert(z.limb(1) > 0);
     }
 
     function usingStructs(
-        SomeStruct memory someStructParam,
-        SomeStruct[] memory someStructArray
-    ) internal returns (SomeStruct[] memory) {
+        SomeStruct storage someStructParam,
+        SomeStruct[] storage someStructArray
+    ) internal returns (SomeStruct[] storage) {
         return someStructArray;
     }
 
-    function usingEnum(FileLevelMemoryEnum status) public {
+    function usingEnum(FileLevelMemoryEnum status) public {}
 
-    }
+    function usingStruct(FunctionParamStruct memory param) public {}
 
-    function usingStruct(FunctionParamStruct memory param) public {
-    }
+    function usingStructArray(
+        FunctionParamArrayStruct[] memory params
+    ) public {}
 
-    function usingStructArray(FunctionParamArrayStruct[] memory params) public {
-    }
+    function internalCalc(uint256 input) internal {}
 
-    function internalCalc(uint256 input) internal {
-
-    }
-
-    function callInternalCalcUsingLibFunction() {
-        internalCalc(ParamDeclarationLibrary.min(1,2));
+    function callInternalCalcUsingLibFunction() public {
+        internalCalc(ParamDeclarationLibrary.min(1, 2));
     }
 
     function createContractUsingLibFunction() private {
-        new ConstructorContract(ConstructorDeclarationLibrary.min(2,3));
+        new ConstructorContract(ConstructorDeclarationLibrary.min(2, 3));
     }
 }

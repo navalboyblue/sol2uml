@@ -117,6 +117,8 @@ sol2uml diff 0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45 0xB971eF87ede563556b2ED4
 ## TestStorage
 sol2uml storage ../src/contracts -c TestStorage -v -o ../examples/storage
 
+sol2uml storage ../src/contracts -c Associations -v
+
 ## FRAXStablecoin where Contract is followed by a boolean.
 sol2uml storage -d 0x853d955aCEf822Db058eb8505911ED77F175b99e
 
