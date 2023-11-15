@@ -27,7 +27,7 @@ export const findAssociatedClass = (
     // Could not find a link so now need to recursively look at imports of imports
     // add to already recursively processed files to avoid getting stuck in circular imports
     searchedAbsolutePaths.push(sourceUmlClass.absolutePath)
-    return findImplicitImport(
+    return findChainedImport(
         association,
         sourceUmlClass,
         umlClasses,
@@ -40,17 +40,17 @@ const isAssociated = (
     association: Association,
     sourceUmlClass: UmlClass,
     targetUmlClass: UmlClass,
-    targetParentmlClass: UmlClass,
+    targetParentUmlClass: UmlClass,
 ): boolean => {
     if (association.parentUmlClassName) {
         return (
             // class is in the same source file
             (association.targetUmlClassName === targetUmlClass.name &&
-                association.parentUmlClassName === targetParentmlClass?.name &&
+                association.parentUmlClassName === targetParentUmlClass?.name &&
                 sourceUmlClass.absolutePath === targetUmlClass.absolutePath) ||
             // imported classes with no explicit import names
             (association.targetUmlClassName === targetUmlClass.name &&
-                association.parentUmlClassName === targetParentmlClass?.name &&
+                association.parentUmlClassName === targetParentUmlClass?.name &&
                 sourceUmlClass.imports.some(
                     (i) =>
                         i.absolutePath === targetUmlClass.absolutePath &&
@@ -110,18 +110,26 @@ const isAssociated = (
     )
 }
 
-const findImplicitImport = (
+const findChainedImport = (
     association: Association,
     sourceUmlClass: UmlClass,
     umlClasses: readonly UmlClass[],
     searchedRelativePaths: string[],
 ): UmlClass | undefined => {
-    // Get all implicit imports. That is, imports that do not explicitly import contracts or interfaces.
-    const implicitImports = sourceUmlClass.imports.filter(
-        (i) => i.classNames.length === 0,
+    // Get all valid imports. That is, imports that do not explicitly import contracts or interfaces
+    // or explicitly import the source class
+    const imports = sourceUmlClass.imports.filter(
+        (i) =>
+            i.classNames.length === 0 ||
+            i.classNames.some(
+                (cn) =>
+                    (association.targetUmlClassName === cn.className &&
+                        !cn.alias) ||
+                    association.targetUmlClassName === cn.alias,
+            ),
     )
-    // For each implicit import
-    for (const importDetail of implicitImports) {
+    // For each import
+    for (const importDetail of imports) {
         // Find a class with the same absolute path as the import so we can get the new imports
         const newSourceUmlClass = umlClasses.find(
             (c) => c.absolutePath === importDetail.absolutePath,
@@ -135,7 +143,8 @@ const findImplicitImport = (
             // Have already recursively looked for imports of imports in this file
             continue
         }
-        // TODO need to handle imports that use aliases as the association will not be found
+
+        // find class linked to the association without aliased imports
         const umlClass = findAssociatedClass(
             association,
             newSourceUmlClass,
@@ -143,6 +152,19 @@ const findImplicitImport = (
             searchedRelativePaths,
         )
         if (umlClass) return umlClass
+
+        // find all aliased imports
+        const aliasedImports = importDetail.classNames.filter((cn) => cn.alias)
+        // For each aliased import
+        for (const aliasedImport of aliasedImports) {
+            const umlClass = findAssociatedClass(
+                { ...association, targetUmlClassName: aliasedImport.className },
+                newSourceUmlClass,
+                umlClasses,
+                searchedRelativePaths,
+            )
+            if (umlClass) return umlClass
+        }
     }
     return undefined
 }

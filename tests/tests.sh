@@ -176,6 +176,13 @@ sol2uml storage 0x2fdfbb2b905484f1445e23a97c97f65fe0e43dec -d -s 0xc0f42f73b8f01
 sol2uml storage 0x2fdfbb2b905484f1445e23a97c97f65fe0e43dec -d -s 0xc0f42f73b8f01849a2dd99753524d4ba14317eb3 \
   --slotNames OUSD.governor,OUSD.pending.governor,OUSD.reentry.status,0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc
 
+## From issue https://github.com/naddison36/sol2uml/issues/175
+sol2uml storage 0x8115366Ca7Cf280a760f0bC0F6Db3026e2437115 -v --data --storage 0xC13e21B648A5Ee794902342038FF3aDAB66BE987
+sol2uml storage 0x8115366Ca7Cf280a760f0bC0F6Db3026e2437115 -v --data --storage 0xC13e21B648A5Ee794902342038FF3aDAB66BE987 --hideExpand ______gap --hideValues
+
+# Test import of imports including aliased imports
+sol2uml storage -v -c Concrete ../src/contracts/chainedImports
+
 # Class
 
 ## Maker DSR Strategy Implementation
@@ -190,3 +197,7 @@ sol2uml ../src/contracts -b TestStorage -v
 sol2uml 0xCF205808Ed36593aa40a44F10c7f7C2F67d4A4d4 -v --network base
 ## USDC on Base
 sol2uml 0x1833C6171E0A3389B156eAedB301CFfbf328B463 -v --network base
+
+# All OpenZeppelin contracts
+sol2uml ../node_modules/@openzeppelin/contracts
+

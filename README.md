@@ -373,3 +373,5 @@ sol2uml uses [@solidity-parser/parser](https://github.com/solidity-parser/parser
 The [Solidity language grammar](https://solidity.readthedocs.io/en/develop/miscellaneous.html#language-grammar) is published with each major release.
 
 The diagrams are generated using [viz.js](https://github.com/mdaines/viz.js/) which uses [Graphviz](http://www.graphviz.org/) to render a [Scalable Vector Graphics (SVG)](https://en.wikipedia.org/wiki/Scalable_Vector_Graphics) file. [Graphviz Online](https://dreampuf.github.io/GraphvizOnline/) allows dot files to be edited and rendered into a SVG dynamically.
+
+The `diff` command use's Google's [Diff Match and Patch library](https://github.com/google/diff-match-patch).
