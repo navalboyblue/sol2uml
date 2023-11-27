@@ -2,7 +2,7 @@ pragma solidity ^0.8.6;
 
 import './libraries/BigInt.sol';
 import './libraries/Set.sol';
-import {ImportedFileLevelStruct, ImportedFileLevelStructAliased as IFLSA, ImportedTypesInContract} from './ImportedTypes.sol';
+import {ImportedFileLevelStruct, ImportedFileLevelStructAliased as IFLSA, ImportedTypesInContract, ImportedInterfaceWithStruct, ImportedParentContract, ImportedTypesAliasedContract as ITAS} from './ImportedTypes.sol';
 
 interface ConstructorParamInterface {
     function someFunction() external returns (bool);
@@ -196,6 +196,13 @@ library LibraryWithEnumLinked {
     }
 }
 
+interface InterfaceWithStructLinked {
+    struct InterfaceStruct {
+        address tester;
+        uint256 counter;
+    }
+}
+
 struct StructOfStruct {
     address owner;
     bool flag;
@@ -238,7 +245,11 @@ uint256 constant FileConstant = 5;
 abstract contract Associations is
     ContractInterface,
     ContractAbstract,
-    ContractConcrete
+    ContractConcrete,
+    InterfaceWithStructLinked,
+    ImportedInterfaceWithStruct,
+    ImportedParentContract,
+    ITAS
 {
     uint256 public someInt;
 
@@ -251,6 +262,11 @@ abstract contract Associations is
     ImportedFileLevelStruct importedFileLevelStruct;
     IFLSA importedFileLevelStructAliased;
     ImportedTypesInContract.ImportedContractLevelStruct importedTypesInContract;
+    InterfaceStruct interfaceStruct;
+    ImportedInterfaceStruct importedInterfaceStruct;
+    GrandStruct grandStruct;
+    AliasedStruct aliasedStruct;
+    AliasedEnum aliasedEnum;
 
     FileLevelStorageEnum fileLevelEnum;
     LibraryWithStructLinked.LibStruct libStruct;

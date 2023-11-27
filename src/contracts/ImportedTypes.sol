@@ -22,3 +22,43 @@ contract ImportedTypesInContract {
         uint64 timestamp;
     }
 }
+
+interface ImportedInterfaceWithStruct {
+    struct ImportedInterfaceStruct {
+        address racer;
+        uint256 points;
+    }
+}
+
+contract ImportedTypesInGrandContract {
+    struct GrandStruct {
+        uint256 total;
+        address user;
+    }
+    enum GrantEnum {
+        GRANT,
+        REVOKE
+    }
+}
+
+contract ImportedParentContract is ImportedTypesInGrandContract {
+    struct ParentStruct {
+        bool flag;
+        uint256 counter;
+    }
+    enum ParentEnum {
+        ONE,
+        TWO
+    }
+}
+
+contract ImportedTypesAliasedContract {
+    struct AliasedStruct {
+        string name;
+        string symbol;
+    }
+    enum AliasedEnum {
+        short,
+        long
+    }
+}

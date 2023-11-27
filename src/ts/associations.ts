@@ -24,15 +24,26 @@ export const findAssociatedClass = (
     // If a link was found
     if (umlClass) return umlClass
 
-    // Could not find a link so now need to recursively look at imports of imports
+    // Could not find association so now need to recursively look at imports of imports
     // add to already recursively processed files to avoid getting stuck in circular imports
     searchedAbsolutePaths.push(sourceUmlClass.absolutePath)
-    return findChainedImport(
+    const importedType = findChainedImport(
         association,
         sourceUmlClass,
         umlClasses,
         searchedAbsolutePaths,
     )
+    if (importedType) return importedType
+
+    // Still could not find association so now need to recursively look for inherited types
+    const inheritedType = findInheritedType(
+        association,
+        sourceUmlClass,
+        umlClasses,
+    )
+    if (inheritedType) return inheritedType
+
+    return undefined
 }
 
 // Tests if source class can be linked to the target class via an association
@@ -63,22 +74,21 @@ const isAssociated = (
                     importLink.classNames.some(
                         (importedClass) =>
                             // If a parent contract with no import alias
-                            (association.parentUmlClassName !== undefined &&
+                            (association.targetUmlClassName ===
+                                targetUmlClass.name &&
                                 association.parentUmlClassName ===
                                     importedClass.className &&
-                                importedClass.className ===
-                                    targetUmlClass.name &&
                                 importedClass.alias == undefined) ||
                             // If a parent contract with import alias
-                            (association.parentUmlClassName !== undefined &&
+                            (association.targetUmlClassName ===
+                                targetUmlClass.name &&
                                 association.parentUmlClassName ===
-                                    importedClass.alias &&
-                                importedClass.className ===
-                                    targetUmlClass.name),
+                                    importedClass.alias),
                     ),
             )
         )
     }
+    // No parent class in the association
     return (
         // class is in the same source file
         (association.targetUmlClassName === targetUmlClass.name &&
@@ -108,6 +118,47 @@ const isAssociated = (
                 ),
         )
     )
+}
+
+const findInheritedType = (
+    association: Association,
+    sourceUmlClass: UmlClass,
+    umlClasses: readonly UmlClass[],
+): UmlClass | undefined => {
+    // Get all realized associations.
+    const parentAssociations = sourceUmlClass.getParentContracts()
+
+    // For each parent association
+    for (const parentAssociation of parentAssociations) {
+        const parent = findAssociatedClass(
+            parentAssociation,
+            sourceUmlClass,
+            umlClasses,
+        )
+        if (!parent) continue
+        // For each struct on the parent
+        for (const structId of parent.structs) {
+            const structUmlClass = umlClasses.find((c) => c.id === structId)
+            if (!structUmlClass) continue
+            if (structUmlClass.name === association.targetUmlClassName) {
+                return structUmlClass
+            }
+        }
+        // For each enum on the parent
+        for (const enumId of parent.enums) {
+            const enumUmlClass = umlClasses.find((c) => c.id === enumId)
+            if (!enumUmlClass) continue
+            if (enumUmlClass.name === association.targetUmlClassName) {
+                return enumUmlClass
+            }
+        }
+
+        // Recursively look for inherited types
+        const targetClass = findInheritedType(association, parent, umlClasses)
+        if (targetClass) return targetClass
+    }
+
+    return undefined
 }
 
 const findChainedImport = (
