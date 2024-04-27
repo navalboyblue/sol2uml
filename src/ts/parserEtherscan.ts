@@ -18,7 +18,7 @@ export interface Remapping {
 
 export const networks = <const>[
     'mainnet',
-    'goerli',
+    'holesky',
     'sepolia',
     'polygon',
     'arbitrum',

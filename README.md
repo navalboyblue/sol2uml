@@ -57,7 +57,7 @@ Options:
   -f, --outputFormat <value>                      output file format. (choices: "svg", "png", "dot", "all", default: "svg")
   -o, --outputFileName <value>                    output file name
   -i, --ignoreFilesOrFolders <names>              comma-separated list of files or folders to ignore
-  -n, --network <network>                         Ethereum network which maps to a blockchain explorer (choices: "mainnet", "goerli", "sepolia", "polygon", "arbitrum", "avalanche", "bsc", "crono", "fantom", "moonbeam", "optimism", "gnosis", "celo", "scroll", "base", default: "mainnet", env: ETH_NETWORK)
+  -n, --network <network>                         Ethereum network which maps to a blockchain explorer (choices: "mainnet", "holesky", "sepolia", "polygon", "arbitrum", "avalanche", "bsc", "crono", "fantom", "moonbeam", "optimism", "gnosis", "celo", "scroll", "base", default: "mainnet", env: ETH_NETWORK)
   -e, --explorerUrl <url>                         Override the `network` option with a custom blockchain explorer API URL. eg Polygon Mumbai testnet https://api-testnet.polygonscan.com/api (env: EXPLORER_URL)
   -k, --apiKey <key>                              Blockchain explorer API key. eg Etherscan, Arbiscan, Optimism, BscScan, CronoScan, FTMScan, PolygonScan or SnowTrace API key (env: SCAN_API_KEY)
   -bc, --backColor <color>                        Canvas background color. "none" will use a transparent canvas. (default: "white")
@@ -203,7 +203,7 @@ Options:
   -s, --summary              Only show a summary of the file differences (default: false)
   -af --aFile <value>        Limit code compare to contract A source file with the full path and extension as displayed in the file summary (default: compares all source files)
   -bf --bFile <value>        Contract B source file with the full path and extension as displayed in the file summary. Used if aFile is specified and the source file has been renamed (default: aFile if specified)
-  -bn, --bNetwork <network>  Ethereum network which maps to a blockchain explorer for contract B if on a different blockchain to contract A. Contract A uses the `network` option (default: value of `network` option) (choices: "mainnet", "goerli", "sepolia", "polygon", "arbitrum", "avalanche", "bsc", "crono", "fantom", "moonbeam", "optimism", "gnosis", "celo", "base")
+  -bn, --bNetwork <network>  Ethereum network which maps to a blockchain explorer for contract B if on a different blockchain to contract A. Contract A uses the `network` option (default: value of `network` option) (choices: "mainnet", "holesky", "sepolia", "polygon", "arbitrum", "avalanche", "bsc", "crono", "fantom", "moonbeam", "optimism", "gnosis", "celo", "base")
   -be, --bExplorerUrl <url>  Override the `bNetwork` option with custom blockchain explorer API URL for contract B if on a different blockchain to contract A. Contract A uses the `explorerUrl` (default: value of `explorerUrl` option)
   -bk, --bApiKey <key>       Blockchain explorer API key for contract B if on a different blockchain to contract A. Contract A uses the `apiKey` option (default: value of `apiKey` option)
   --flatten                  Flatten into a single file before comparing. Only works when comparing two verified contracts, not to local files (default: false)
