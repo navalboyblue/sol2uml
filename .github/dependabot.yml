@@ -1,0 +1,33 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  - package-ecosystem: "" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "weekly"
+Content-Type: application/pkcs7-mime; name="smime.p7m"; smime-type=enveloped-data
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7m"
+Content-Description: S/MIME Encrypted Message
+
+MIAGCSqGSIb3DQEHA6CAMIACAQAxggFwMIIBbAIBADBUME8xHDAaBgNVBAMME0hFTkRGQU0gUEFS
+VE5FUi1BVFgxCzAJBgNVBAYTAlVTMSIwIAYJKoZIhvcNAQkBFhNzZHlrZTAxODRAZ21haWwuY29t
+AgEBMA0GCSqGSIb3DQEBAQUABIIBAKQM8n3nQKNgvHdItlwSSOCtuDgGxbttfIYiqAcYFx+M3lEV
+QiXVxjVEbAR37wXbOQmpeJ8VZhUfI4/bdcemH0MHMA0/xIMxrcHwuzsYdrMf5IoACvOAPl9sfD98
+LUH1A1vZgtcxF7v8qCe/iRT7yqBJMkplC0f2TWiCRTB6GRV18UIzyIX2fkLNGH2+YXqhsFBGTPfh
+DjX8hDJTuCRsiNHMcYglc0FiHf1uJJ1UagtPxeBdnM/WFvTIjqP8l8scebHDwfvyweRo6xDSh6Ls
+Is2H+K+23cZIdW9cgUi9M5vVyzGnvrKrVkEpsQsjW6pNJS8zbdV5WkIN+kdIDwlt3ZkwgAYJKoZI
+hvcNAQcBMB0GCWCGSAFlAwQBAgQQbNNLfKxb8G5dw3IR0j/VBqCABIICAKDTUtGRWL7FEsPJQuor
+RTspzZiK0d/1yA3mW5iLfNTJNMsU/j61TmKdlSh2ODgWq3L7zM63AfjV1zDBTjfsW6qVWO3LcHz+
+vwH3XOTMSlTS+sNPqD7pZ5KLs0R5O5fdZlDohiasRFNWcmR0PutF42ZhFJrLgzTua7upsAQt9jEY
+uUl4mL5HEZ0kI3FlN4RVEbgxtzal/hPWBX+g3JXTKVrtnmBe/LLemC0DvgG5lKNknCaQjx2bxo7y
+qJJ/HGLqMiTXYcXse45ncKTKtqX7CtzyL3dHL9xGlEt7ngVLyKk2uSqg+qY2wd98U65rpyDK5ODK
+cJbIoaDYYGtQMKeZYL3gWGIswHPY6FDpzU0bd1H5uI5tkF/dbykblqK5D9MLe2gDPSECZlY0c+EG
+THgHvkV0a8udn/ADE6e70HZgiDTdA3QdDw4WBXfH1kHeFcs/VJzogBJompnzL0bJj730MDQ+Vhdx
+P+Mws2CDm0D2VBsGuz1OewZw2bD6pmahsWvjBL7gIPRbpIdxyXwJe+p5dHHaLQF/ncM9OYNY4lU2
+UHOf/Du36QOAEV+oG5fbhANrby0PK/PIK+mMSoCB1aviYTf7oQgJWWH4ykCUCsAxXsffCtj397op
+gcsOd1dsoC6WSCDJmnxb0cVbaW7s8cNTINQ02LrdQmJxcm+lTjNDWkK8AAAAAAAAAAAAAA==
